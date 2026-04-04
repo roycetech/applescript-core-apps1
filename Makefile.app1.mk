@@ -131,7 +131,7 @@ $(debug     VERSION_SAFARI_MAJOR_MINOR: $(VERSION_SAFARI_MAJOR_MINOR))
 # dir — build when VERSION_SAFARI_MAJOR_MINOR >= dir (subfolders of Safari/, excluding 16.0)
 SAFARI_VERSION_BUILDS := $(filter-out 16.0,$(patsubst $(APP_WRAPPERS)/Safari/%/,%,$(wildcard $(APP_WRAPPERS)/Safari/*/)))
 
-build-safari: build-base-app build-dock build-process
+build-safari: build-base-app
 	# Older versions of scripts are built first and overwritten by newer versions.
 	@echo "Building Safari 16.0 scripts"
 	$(call _build-script,core/Level_5/javascript)
