@@ -31,7 +31,7 @@ build-apps-first-party: \
 	build-terminal
 
 
-# 1st Party Apps Library ------------------------------------------------------
+# 1st Party Apps Library ======================================================
 
 build-activity-monitor:
 	@echo "Building Activity Monitor scripts..."
@@ -222,13 +222,28 @@ endif
 ifeq ($(shell [ $(OS_VERSION_MAJOR) -gt $(OS_SEQUOIA) ] && echo yes),yes)
 	$(call _build-app-version-scripts,Terminal 2.15.0,$(APP_WRAPPERS)/Terminal/2.15)
 endif
-	$(call _build-script,libs/sftp/dec-terminal-prompt-sftp)
+	$(call _build-script,libraries/sftp/dec-terminal-prompt-sftp)
 	@echo "Build Terminal completed\n"
 
 
 build-xcode:
 	$(call _build-app-scripts-if-exists,Xcode,apps/3rd-party/Xcode/15.4)
 
+
+# Other Targets  ==============================================================
+build-libraries:
+	@echo "Building all library scripts in libraries/..."
+	@find libraries -type f -name '*.applescript' -print0 \
+	| while IFS= read -r -d '' file; do \
+		echo "Building $$file"; \
+		no_ext=$${file%.applescript}; \
+		yes y | ./scripts/build-lib.sh "$$no_ext"; \
+	done
+	@echo "Build libraries completed\n"
+
+
+
+# Helper functions ============================================================
 
 # This is a helper function to build scripts for a specific app version.
 # @1 - App name with version number for display purposes
