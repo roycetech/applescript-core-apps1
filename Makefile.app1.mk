@@ -49,6 +49,7 @@ install-activity-monitor: build-activity-monitor
 	mkdir -p /Applications/AppleScript
 	osascript scripts/setup-apps-applescript-path.applescript
 
+
 build-automator:
 	# Automator will be launched by osacompile to verify its usage.  It will be
 	# killed after the build is complete unless it is already running.

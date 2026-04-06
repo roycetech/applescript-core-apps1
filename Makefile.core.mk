@@ -40,10 +40,8 @@ clean:
 
 
 reveal-scripts:  # Reveal the deployed scripts.
-# ifeq ($(DEPLOY_TYPE), user)
-# 	open ~/Library/Script\ Libraries
-# fi
 	open "$(SCRIPT_LIBRARY_PATH)/core"
+
 
 # Helper function to build and confirm with yes to the prompt.
 _build-script = \
