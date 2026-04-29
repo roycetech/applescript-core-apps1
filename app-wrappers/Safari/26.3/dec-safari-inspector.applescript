@@ -27,6 +27,7 @@ use kbLib : script "core/keyboard"
 use retryLib : script "core/retry"
 
 property logger : missing value
+
 property kb : missing value
 property retry : missing value
 
@@ -198,6 +199,7 @@ on decorate(mainScript)
 
 		on closeWebInspector()
 			if running of application "Safari" is false then return
+			if not isInspectorPanelActive() then return
 
 			script CloseWaiter
 				tell application "System Events" to tell process "Safari"
