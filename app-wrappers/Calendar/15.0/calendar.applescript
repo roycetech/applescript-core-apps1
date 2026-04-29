@@ -226,7 +226,7 @@ on new()
 	set baseApp to script "core/base-app"
 
 	script CalendarInstance
-		property parent : baseApp's new()
+		property parent : baseApp's new("Calendar")
 		property IS_TEST : false
 		property TEST_DATETIME : missing value
 		property appAlreadyRunning : false

@@ -109,7 +109,11 @@ on new()
 	loggerFactory's inject(me)
 	set dock to dockLib's new()
 
+	set baseAppLib to script "core/base-app"
+
 	script MailInstance
+		property parent: baseAppLib's new("Mail")
+
 		on focusMessage(accountName, mailboxName, messageId)
 			if running of application "Mail" is false then
 				activate application "Mail"
