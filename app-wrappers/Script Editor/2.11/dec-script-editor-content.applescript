@@ -9,8 +9,11 @@
 	@Build:
 		./scripts/build-lib.sh 'app-wrappers/Script Editor/2.11/dec-script-editor-content'
 
-	@Created: Wednesday, July 26, 2023 at 6:33:55 PM
+	@Created: Wednesday, July 26, 2023 at 6:33:55 PM 
 	@Last Modified: July 26, 2023 9:49 PM
+	
+	@Change Logs:
+		Wed, Apr 22, 2026, at 04:07:19 PM - Added #selectTextBetween
 *)
 use scripting additions
 use script "core/Text Utilities"
@@ -43,6 +46,8 @@ on spotCheck()
 		
 		Manual: Select substring
 		Manual: Set selected text to a new value
+		Manual: #selectTextBetween
+		Dummy
 		Dummy
 	")
 	
@@ -142,6 +147,17 @@ end new
 		-- select-me
 		sut's setSelectedText(sutNewText)
 		
+	else if caseIndex is 13 then
+		set sutStart to "Alpha"
+		set sutStart to "use "
+		logger's debugf("sutStart: {}", sutStart)
+		
+		set sutEnd to "Omega"
+		set sutEnd to " additions"
+		logger's debugf("sutEnd: {}", sutEnd)
+		
+		sut's selectTextBetweenFirst(sutStart, sutEnd)
+		
 	end if
 	
 	spot's finish()
@@ -152,6 +168,7 @@ end spotCheck
 (*  *)
 on decorate(mainScript)
 	loggerFactory's inject(me)
+	set considerCase of textUtil to true
 	
 	script ScriptEditorContentDecorator
 		(* Reference to ScriptEditorInstance *)
@@ -160,9 +177,39 @@ on decorate(mainScript)
 		property windowTitle : "Temp Document"
 		
 		
+		(*
+			@Deprecated: Confusing, use #replaceSelectedText instead.
+		*)
 		on setSelectedText(newText)
 			insertTextAtCursor(newText)
 		end setSelectedText
+		
+		
+		on replaceSelectedText(newText)
+			insertTextAtCursor(newText)
+		end replaceSelectedText
+		
+		
+		on selectTextBetweenFirst(textBefore, textAfter)
+			if textBefore is missing value then return
+			if textBefore is "" then return
+			if textAfter is missing value then return
+			if textAfter is "" then return
+			
+			set frontContents to getFrontContents()
+			set substringIndex to (textUtil's indexOf(frontContents, textBefore)) + (length of textBefore)
+			-- logger's debugf("substringIndex: {}", substringIndex)
+			
+			if substringIndex is 0 then return
+			
+			-- set endIndex to substringIndex + the (number of characters in textToSelect) - 1
+			set endIndex to (textUtil's indexOfAfter(frontContents, textAfter, substringIndex)) - 1
+			-- logger's debugf("endIndex: {}", endIndex)
+			
+			tell application "Script Editor" to tell front document
+				set selection to characters substringIndex thru endIndex
+			end tell
+		end selectTextBetweenFirst
 		
 		
 		(*
