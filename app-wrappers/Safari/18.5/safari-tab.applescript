@@ -614,6 +614,10 @@ on new(windowId, pTabIndex)
 			missing value
 		end getAddressBarValue
 
+		on openUrl(targetUrl)
+			goto(targetUrl)
+		end openUrl
+
 		on goto(targetUrl)
 			script PageWaiter
 
