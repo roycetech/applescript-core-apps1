@@ -68,13 +68,17 @@ test-integration:
 	osascript "test/app-wrappers/Test dec-script-editor-content.applescript"
 	open -a "Keyboard Maestro Engine"
 
-watch: watch-unit
+watch:
+	scripts/run-osascript_on-change.sh
+
+watch-test: watch-unit
 
 watch-unit: test-unit
 	scripts/run-tests_on-change.sh  # This runs test-unit target on change.
 
 watch-integration: test-integration
 	scripts/run-integration-tests_on-change.sh  # This runs test-unit target on change.
+
 
 spot:  # Test single script here.
 # 	osascript 'apps/3rd-party/Google Chrome/131.0/dec-google-chrome-tab-finder.applescript'
@@ -102,7 +106,7 @@ spot:  # Test single script here.
 # 	osascript "test/core/Test dec-terminal-path.applescript"
 # 	osascript "test/apps/3rd-party/Test keyboard-maestro.applescript"
 
-spot-watch: spot
+
+watch-spot: spot
 # 	scripts/run-spot_on-change.sh
 	scripts/run-spot-test_on-change.sh
-
