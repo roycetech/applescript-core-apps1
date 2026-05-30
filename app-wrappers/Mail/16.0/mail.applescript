@@ -10,6 +10,8 @@
 	@Created: Pre-2023
 
 	@Change Logs:
+		Wed, May 27, 2026, at 07:31:55 PM - Improved the #getMainWindow handler.
+			Added #getMessageWindow handler.
 		Fri, Feb 27, 2026, at 07:31:55 PM - Added #moveMainWindowToFront
 		Fri, Jan 23, 2026, at 11:16:56 AM - Added #clearSearch handler.
 		Wed, Jul 17, 2024 at 10:33:53 AM - Removed dependency with cliclick.
@@ -21,15 +23,13 @@ use textUtil : script "core/string"
 use loggerFactory : script "core/logger-factory"
 
 use dockLib : script "core/dock"
-use decMailSettings : script "core/dec-mail-settings"
-use decMailSelection : script "core/dec-mail-selection"
 
 property logger : missing value
 
 property dock : missing value
 
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)
@@ -44,6 +44,7 @@ on spotCheck()
 		Manual: Clear Search
 
 		Manual: Message Window
+		Manual: Integration: Delete Message
 	")
 
 	set spotScript to script "core/spot-test"
@@ -58,9 +59,6 @@ on spotCheck()
 	set sut to new()
 	set isMessageWindow to sut's isMessageWindowActive()
 	logger's infof("Message window at front?: {}", isMessageWindow)
-	if isMessageWindow then
-
-	end if
 
 	logger's infof("Sender: {}", sut's getMessageSender())
 	logger's infof("Sender domain: {}", sut's getMessageSenderDomain())
@@ -98,6 +96,13 @@ on spotCheck()
 	else if caseIndex is 5 then
 		sut's clearSearch()
 
+	else if caseIndex is 6 then
+		set messageWindow to sut's getMessageWindow()
+		logger's infof("messageWindow present?: {}", messageWindow is not missing value)
+
+	else if caseIndex is 7 then
+		sut's deleteMessage()
+
 	end if
 
 	spot's finish()
@@ -108,8 +113,12 @@ end spotCheck
 on new()
 	loggerFactory's inject(me)
 	set dock to dockLib's new()
-
 	set baseAppLib to script "core/base-app"
+
+	set decMailSettings to script "core/dec-mail-settings"
+	set decMailSelection to script "core/dec-mail-selection"
+	set decMailMainWindow to script "core/dec-mail-main-window"
+	set decMailMessage to script "core/dec-mail-message"
 
 	script MailInstance
 		property parent: baseAppLib's new("Mail")
@@ -158,6 +167,10 @@ on new()
 
 			windowTitle does not contain unic's MAIL_SUBDASH
 		end isMessageWindowActive
+
+		on isMainWindowActive()
+			not isMessageWindowActive()
+		end isMainWindowActive
 
 
 		(*
@@ -245,11 +258,24 @@ on new()
 
 			tell application "System Events" to tell process "Mail"
 				try
-					return first window whose title contains "messages" or title contains "drafts" or title contains "Searching"
+					-- return first window whose title contains "messages" or title contains "drafts" or title contains "Searching"
+					return first window whose description of checkbox 1 of toolbar 1 is "Filter"  -- Main window has the filter checkbox.
 				end try
 			end tell
 			missing value
 		end getMainWindow
+
+
+		on getMessageWindow()
+			if running of application "Mail" is false then return missing value
+
+			tell application "System Events" to tell process "Mail"
+				try
+					return first window whose description of checkbox 1 of toolbar 1 is not "Filter"
+				end try
+			end tell
+			missing value
+		end getMessageWindow
 
 
 		on moveMainWindowToFront()
@@ -273,4 +299,7 @@ on new()
 
 	decMailSettings's decorate(result)
 	decMailSelection's decorate(result)
+	decMailMainWindow's decorate(result)
+	decMailMessage's decorate(result)
 end new
+
