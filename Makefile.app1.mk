@@ -91,22 +91,9 @@ install-calendar: build-calendar
 build-console:
 	$(call _build-app-scripts,Console 1.1,$(APP_WRAPPERS)/Console/v1.1)
 
-
+VERSION_FINDER_MAJOR_MINOR = $(shell osascript -e "tell application \"Finder\" to version" | awk -F. '{print $$1 "." $$2}')
 build-finder:
-ifeq ($(shell [ $(OS_VERSION_MAJOR) -lt $(OS_MONTEREY) ] && echo yes),yes)
-	@echo "Untested macOS version for Finder. Development started at least on macOS Monterey (v12)."
-endif
-	$(call _build-script,$(APP_WRAPPERS)/Finder/12.5/finder)
-
-ifeq ($(shell [ $(OS_VERSION_MAJOR) -gt $(OS_MONTEREY) ] && echo yes),yes)
-	$(call _build-app-version-scripts,Finder 15.2,$(APP_WRAPPERS)/Finder/15.2)
-endif
-
-ifeq ($(shell [ $(OS_VERSION_MAJOR) -gt $(OS_SEQUOIA) ] && echo yes),yes)
-	$(call _build-script,$(APP_WRAPPERS)/Finder/26.0/dec-finder-view)
-	$(call _build-script,$(APP_WRAPPERS)/Finder/26.1/dec-finder-dialog)
-	$(call _build-script,$(APP_WRAPPERS)/Finder/26.1/finder)
-endif
+	$(call _build-versioned-directory,Finder,$(APP_WRAPPERS)/Finder,"$(VERSION_FINDER_MAJOR_MINOR)")
 	@echo "Build Finder completed\n"
 
 

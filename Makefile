@@ -10,6 +10,10 @@ OS_VERSION := $(shell osascript -e "system version of (system info)")
 OS_VERSION_MAJOR := $(shell osascript -e "system version of (system info)" \
 | cut -d '.' -f 1)
 
+OS_VERSION_MAJOR_MINOR := $(shell osascript -e "system version of (system info)" \
+| cut -d '.' -f 1)
+
+
 IS_12  := $(shell [ $(OS_VERSION_MAJOR) -eq 12 ] && echo 1)
 GT_12  := $(shell [ $(OS_VERSION_MAJOR) -gt 12 ] && echo 1)
 GE_26  := $(shell [ $(OS_VERSION_MAJOR) -ge 26 ] && echo 1)
