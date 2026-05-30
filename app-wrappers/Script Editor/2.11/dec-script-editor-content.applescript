@@ -24,7 +24,7 @@ use loggerFactory : script "core/logger-factory"
 
 property logger : missing value
 
-if name of current application is "Script Editor" then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

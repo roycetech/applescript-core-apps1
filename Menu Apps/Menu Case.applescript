@@ -76,7 +76,7 @@ set my cases to session's getList("Case Labels")
 
 set spotLib to missing value
 
-set isSpot to {"Script Editor", "Script Debugger"} contains the name of current application
+set isSpot to {"Script Editor", "Script Debugger", "osascript"} contains the name of current application
 
 
 if isSpot then

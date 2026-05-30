@@ -29,7 +29,7 @@ property KEYWORD_PASSWORD_PROMPT : "Save Password"
 property KEYWORD_STRONG_PASSWORD_PROMPT : "Many people use this password"
 property KEYWORD_UPDATE_PASSWORD_PROMPT : "Do you want to update the password saved"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

@@ -50,7 +50,7 @@ property retry : missing value
 property CONFIG_SYSTEM : "system"
 property CONFIG_KEY_AS_PROJECT_CORE_PATH : "AppleScript Core Project Path"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's injectBasic(me)

@@ -22,7 +22,7 @@ property retry : missing value
 
 property PANE_ID_DESKTOP_AND_DOCK : "com.apple.Desktop-Settings.extension"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

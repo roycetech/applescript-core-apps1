@@ -33,7 +33,7 @@ property retry : missing value
 
 property DEFAULT_GROUP_NAME : "<default>"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

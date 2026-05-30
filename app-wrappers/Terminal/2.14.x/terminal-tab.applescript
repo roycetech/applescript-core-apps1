@@ -44,7 +44,7 @@ property TopLevel : me
 
 property SEPARATOR : unic's SEPARATOR
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

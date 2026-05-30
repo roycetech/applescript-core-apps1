@@ -75,7 +75,7 @@ property syseve : missing value
 (* Used so we can distinguish between script handlers vs instance handlers with the same name. *)
 property main : missing value
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then
 	spotCheck()
 end if
 

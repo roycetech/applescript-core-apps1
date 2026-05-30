@@ -62,7 +62,7 @@ property usr : missing value
 
 property isSpot : false
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then set my isSpot to true
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then set my isSpot to true
 
 loggerFactory's inject(me)
 logger's start()

@@ -63,7 +63,7 @@ property dock : missing value
 (* Used so we can distinguish between script handlers vs instance handlers with the same name. *)
 property main : missing value
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 (*
 	Not for unit test codes because we are visually checking window behavior.

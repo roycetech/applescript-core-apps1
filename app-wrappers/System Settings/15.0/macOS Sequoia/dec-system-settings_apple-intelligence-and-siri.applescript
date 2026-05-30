@@ -23,7 +23,7 @@ property kb : missing value
 
 property PANE_ID_AI_AND_SIRI : "com.apple.Siri-Settings.extension*siri-sae"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

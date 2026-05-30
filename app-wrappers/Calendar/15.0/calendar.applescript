@@ -55,7 +55,7 @@ property calendarEvent : missing value
 property CONFIG_USER : "user"
 property CONFIG_KEY_USER_COUNTRY : "User Country"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's injectBasic(me)

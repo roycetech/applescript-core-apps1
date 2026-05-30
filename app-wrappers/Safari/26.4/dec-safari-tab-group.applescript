@@ -7,7 +7,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Safari/26.4/dec-safari-tab-group'
+		./scripts/build-lib.sh app-wrappers/Safari/26.4/dec-safari-tab-group
 
 	@Created: Monday, June 10, 2024 at 11:42:13 AM
 	@Last Modified: 2026-04-03 18:06:56
@@ -34,7 +34,7 @@ property retry : missing value
 
 property DEFAULT_GROUP_NAME : "<default>"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)
@@ -99,7 +99,6 @@ end spotCheck
 (*  *)
 on decorate(mainScript)
 	loggerFactory's inject(me)
-	
 	set retry to retryLib's new()
 	set kb to kbLib's new()
 	

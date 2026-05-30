@@ -26,7 +26,7 @@ property logger : missing value
 property LABEL_CHECKBOX_USE_COMMAND : "Use " & unic's COMMAND & "-1 through " & unic's COMMAND & "-9 to switch tabs"
 
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

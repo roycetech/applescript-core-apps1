@@ -49,7 +49,7 @@ property windowName : missing value
 
 property SUBMON_APP_SCRIPT : "Script Libraries:core:app:"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

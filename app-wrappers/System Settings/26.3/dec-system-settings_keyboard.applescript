@@ -37,7 +37,7 @@ property MAX_REPEAT_RATE : 7
 property MIN_REPEAT_DELAY : 6
 property MAX_REPEAT_DELAY : 1
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

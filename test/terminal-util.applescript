@@ -41,7 +41,7 @@ property systemEvent : missing value
 property dock : missing value
 property terminal : missing value
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 
 on spotCheck()

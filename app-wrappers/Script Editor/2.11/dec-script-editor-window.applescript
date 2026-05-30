@@ -23,7 +23,7 @@ property ACCESSORY_VIEW_TYPE_LOG : "log" -- (=)
 
 property ACCESSORY_VIEW_TYPE_DESCRIPTIONS : {ACCESSORY_VIEW_TYPE_DESCRIPTION, ACCESSORY_VIEW_TYPE_RESULT, ACCESSORY_VIEW_TYPE_LOG}
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

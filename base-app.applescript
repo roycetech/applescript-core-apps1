@@ -12,7 +12,7 @@
 	@Created: Sat, Feb 28, 2026 at 07:17:25 PM
 	@Last Modified: 2026-03-24 17:31:28
 *)
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck() 
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck() 
 
 property logger : missing value
 

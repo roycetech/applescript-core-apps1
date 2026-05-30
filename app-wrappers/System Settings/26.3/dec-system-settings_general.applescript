@@ -20,7 +20,7 @@ property logger : missing value
 
 property PANE_ID_GENERAL : "com.apple.systempreferences.GeneralSettings"
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)

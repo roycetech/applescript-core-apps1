@@ -65,7 +65,7 @@ property SUBPATH_STAY_OPEN : "Stay Open"
 property SESSION_KEY_LAST_DEPLOYED_SCRIPT : "Last Deployed Menu Script"
 
 tell application "System Events" to set scriptName to get name of (path to me)
-if {"Script Editor", "Script Debugger"} contains the name of current application then set isSpot to true
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then set isSpot to true
 
 loggerFactory's inject(me)
 logger's start()

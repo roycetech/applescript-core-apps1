@@ -70,7 +70,7 @@ set automator to automatorLib's new()
 set configUser to configLib's new("user")
 set session to plutil's new("session")
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then set my isSpot to true
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then set my isSpot to true
 
 try
 	main()

@@ -55,7 +55,7 @@ use winUtilLib : script "core/window"
 property logger : missing value
 property winUtil : missing value
 
-if {"Script Editor", "Script Debugger"} contains the name of current application then spotCheck()
+if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
 	loggerFactory's inject(me)
