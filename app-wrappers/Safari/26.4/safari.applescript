@@ -31,6 +31,7 @@
 		end tell
 
 	@Change Logs:
+		Sat, May 30, 2026, at 05:28:46 PM - Added dec-safari-window-finder decorator
 		Fri, Apr 03, 2026, at 05:58:00 PM - Fixed #isCompact.
 
 	@Created: Mon, Feb 10, 2025 at 7:30:44 AM
@@ -79,7 +80,7 @@ on spotCheck()
 		Manual: New Window
 
 		Manual: First Tab
-		Manual: Get Group Name(default, group selected)
+		Manual: New Window with Profile
 		Manual: Switch Group(not found, found, no app, no window, missing value for default)
 		Manual: Find Tab With Name ()
 		New Tab - Manually Check when no window is present in current space.
@@ -202,13 +203,23 @@ on spotCheck()
 		sut's switchGroup(newSutGroup)
 		
 	else if caseIndex is 7 then
+		set sutUrl to missing value
+		-- set sutUrl to "https://www.example.com"
+		logger's debugf("sutUrl: {}", sutUrl)
+		
+		set sutProfileName to "Unicorn"
+		set sutProfileName to "Business"
+		set sutProfileName to "Personal"
+		logger's debugf("sutProfileName: {}", sutProfileName)
+		
 		-- sut's newWindow("https://www.example.com")
 		-- sut's newWindowWithProfile("https://www.example.com", "Business")
-		sut's newWindowWithProfile("https://www.example.com", "Unicorn")
+		set theNewWindow to sut's newWindowWithProfile(sutUrl, sutProfileName)
 		
-		logger's infof("Window name: {}", name of appWindow of result)
+		logger's infof("Window name: {}", name of appWindow of theNewWindow)
+		sut's switchGroup("Personal OWA")
 		
-		-- BELOW case handling FOR REVIEW.
+		-- BELOW cases handling FOR REVIEW.
 		
 		
 	else if caseIndex is 3 then
@@ -450,7 +461,7 @@ on new()
 				tell firstWindow
 					if current tab is missing value then return missing value -- When on full screen.
 					
-					safariTabLib's new(its id, index of current tab, me)
+					safariTabLib's new(its id, index of current tab)
 				end tell
 			end tell
 		end getFrontTab
@@ -471,7 +482,7 @@ on new()
 				tell firstWindow
 					if current tab is missing value then return missing value -- When on full screen.
 					
-					safariTabLib's new(its id, index of current tab, me)
+					safariTabLib's new(its id, index of current tab)
 				end tell
 			end tell
 		end getFirstTab
@@ -485,7 +496,7 @@ on new()
 			
 			tell application "System Events" to tell process "Safari"
 				-- UI element 1 of group 2 of toolbar 1 of mainWindow
-				UI element 1 of group 1 of toolbar 1 of mainWindow  -- Can't believe this changed from group 2 in a single day.
+				UI element 1 of group 1 of toolbar 1 of mainWindow -- Can't believe this changed from group 2 in a single day.
 				try
 					return get value of attribute "AXIdentifier" of result is equal to "TabBar?isSeparate=false"
 				end try
@@ -514,28 +525,23 @@ on new()
 		*)
 		on newWindowWithProfile(targetUrl, profileName)
 			set normalProfileName to normalizeProfileName(profileName)
-			set startPageTitleWithProfile to normalProfileName & unic's SEPARATOR & "Start Page"
+			_newSafariWindow(profileName)
 			
-			set safariAppRunning to running of application "Safari"
-			tell application "System Events" to tell process "Safari"
-				if (not safariAppRunning) or not (exists window startPageTitleWithProfile) then
-					my _newSafariWindow(profileName)
-				end if
-			end tell
 			
 			script StartPageWaiter
-				tell application "Safari" to set windowId to id of window startPageTitleWithProfile -- New window will not always start with "Start Page"
-				windowId
+				tell application "Safari"
+					if (the count of tabs of front window) is 1 then return id of front window
+				end tell
 			end script
 			set windowId to exec of retry on result for 3
 			assertThat of std given condition:windowId is not missing value, messageOnFail:"Failed to initialize safari window to a valid state"
 			
 			tell application "Safari"
-				set newSafariTabInstance to safariTabLib's new(windowId, count of tabs of window startPageTitleWithProfile, me)
+				set newSafariTabInstance to safariTabLib's new(windowId, 1)
 			end tell
 			newSafariTabInstance's focus()
 			if targetUrl is not missing value then
-				tell application "Safari" to set URL of front document to targetUrl -- can't avoid focusing the address bar for fresh pages.
+				tell application "Safari" to set URL of front document to targetUrl -- can't avoid focusing the address bar for the new window
 			end if
 			
 			newSafariTabInstance
@@ -598,7 +604,7 @@ on new()
 				set tabTotal to count of tabs of appWindow
 			end tell
 			
-			safariTabLib's new(id of appWindow, tabTotal, me)
+			safariTabLib's new(id of appWindow, tabTotal)
 		end newTab
 		
 		on newCognito(targetUrl)
@@ -649,6 +655,7 @@ on new()
 	
 	decSafariTabFinder's decorate(result)
 	decSafariTabFinder2's decorate(result)
+	decSafariWindowFinder's decorate(result)
 	decSafariUiNoncompact's decorate(result)
 	decSafariSidebar's decorate(result)
 	decSafariKeychain's decorate(result)
