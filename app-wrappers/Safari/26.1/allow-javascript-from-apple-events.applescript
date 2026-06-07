@@ -4,7 +4,7 @@
 	@Created: Sat, Dec 13, 2025, at 10:04:54 AM
 
 	@Change Logs:
-		Mon, Mar 30, 2026, at 09:53:33 AM - Re-focus to the terminal app on completion.
+		Mon, Mar 30, 2026, at 09:53:33 AM - Re-focus to the previous app on completion.
 *)
 use safariLib : script "core/safari"
 use systemEventLib : script "core/system-events"

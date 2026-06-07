@@ -7,11 +7,13 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Safari/18.5/dec-safari-settings'
+		./scripts/build-lib.sh app-wrappers/Safari/18.5/dec-safari-settings
 
 	@Created: Fri, Jul 12, 2024 at 2:58:38 PM
 	@Last Modified: 2026-03-29 13:15:36
+	
 	@Change Logs:
+		Sun, Jun 07, 2026, at 11:44:28 AM - Added window wait in #showSettings.
 *)
 use loggerFactory : script "core/logger-factory"
 
@@ -24,7 +26,7 @@ if {"Script Editor", "Script Debugger", "osascript"} contains the name of curren
 on spotCheck()
 	loggerFactory's inject(me)
 	logger's start()
-
+	
 	set listUtil to script "core/list"
 	set cases to listUtil's splitAndTrimParagraphs("
 		INFO
@@ -36,7 +38,7 @@ on spotCheck()
 		Manual: Disable extension
 		Manual: Close on Target Status
 	")
-
+	
 	set spotScript to script "core/spot-test"
 	set spotClass to spotScript's new()
 	set spot to spotClass's new(me, cases)
@@ -45,35 +47,35 @@ on spotCheck()
 		logger's finish()
 		return
 	end if
-
+	
 	-- activate application ""
 	set sutLib to script "core/safari"
 	set sut to sutLib's new()
 	set sut to decorate(sut)
-
+	
 	logger's infof("Is Settings window active: {}", sut's isSettingsWindowPresent())
 	logger's infof("Active Settings tab: {}", sut's getSettingsTabName())
-
+	
 	if caseIndex is 1 then
-
+		
 	else if caseIndex is 2 then
 		sut's showSettings()
-
+		
 	else if caseIndex is 3 then
 		sut's closeSettings()
-
+		
 	else if caseIndex is 4 then
 		set sutTabName to "Unicorn"
 		set sutTabName to "General"
 		-- set sutTabName to "Feature Flags"
-
+		
 		logger's debugf("sutTabName: {}", sutTabName)
 		sut's switchSettingsTab(sutTabName)
-
+		
 	else
-
+		
 	end if
-
+	
 	spot's finish()
 	logger's finish()
 end spotCheck
@@ -84,37 +86,42 @@ end spotCheck
 *)
 on decorate(mainScript)
 	loggerFactory's inject(me)
-
+	
 	script SafariSettingsDecorator
 		property parent : mainScript
-
+		
 		on showSettings()
 			if isSettingsWindowPresent() then return
-
+			
 			tell application "System Events" to tell process "Safari"
 				try
 					click (first menu item of menu 1 of menu bar item "Safari" of menu bar 1 whose title starts with "Settings")
 				end try
 			end tell
+			
+			repeat 20 times
+				if isSettingsWindowPresent() then return
+				delay 0.2
+			end repeat
 		end showSettings
-
-
+		
+		
 		on closeSettings()
 			set settingsWindow to getSettingsWindow()
 			if settingsWindow is missing value then return
-
+			
 			tell application "System Events" to tell process "Safari"
 				click (first button of settingsWindow whose description is "close button")
 			end tell
 			""
 		end closeSettings
-
-
+		
+		
 		on isSettingsWindowPresent()
 			getSettingsWindow() is not missing value
 		end isSettingsWindowPresent
-
-
+		
+		
 		(*
 			@tabName - e.g. "General", "Privacy", "Extensions", etc.
 			@returns true if successful, false otherwise.
@@ -122,7 +129,7 @@ on decorate(mainScript)
 		on switchSettingsTab(tabName)
 			set settingsWindow to getSettingsWindow()
 			if settingsWindow is missing value then return false
-
+			
 			tell application "System Events" to tell process "Safari"
 				try
 					click (first button of toolbar 1 of settingsWindow whose title contains tabName)
@@ -131,21 +138,21 @@ on decorate(mainScript)
 			end tell
 			false
 		end switchSettingsTab
-
-
+		
+		
 		on getSettingsTabName()
 			set settingsWindow to getSettingsWindow()
 			if settingsWindow is missing value then return missing value
-
+			
 			tell application "System Events"
 				title of settingsWindow
 			end tell
 		end getSettingsTabName
-
-
+		
+		
 		on getSettingsWindow()
 			if running of application "Safari" is false then return missing value
-
+			
 			tell application "System Events" to tell process "Safari"
 				try
 					return first window whose (enabled of second button is false and description of second button is "zoom button")
