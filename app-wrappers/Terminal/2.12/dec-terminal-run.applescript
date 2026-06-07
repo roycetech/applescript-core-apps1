@@ -1,45 +1,37 @@
 (*
-	@Purpose:
-		This script integrates handlers that encompass the run capabilities of the terminal.
-
-	@Project:
-		applescript-core-apps1
+	@Session:
+		runShell-<tab-name>
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14.x/dec-terminal-run'
-
-	@Migrated:
-		Sunday, January 28, 2024 at 2:45:58 PM
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.12/dec-terminal-run'
 *)
 
-use scripting additions
 use script "core/Text Utilities"
+use scripting additions
 
 use listUtil : script "core/list"
 use textUtil : script "core/string"
 
 use loggerFactory : script "core/logger-factory"
 
-use retryLib : script "core/retry"
 use plutilLib : script "core/plutil"
+use retryLib : script "core/retry"
+
 
 property logger : missing value
-
+property session : missing value
 property retry : missing value
-property plutil : missing value
-property terminal : missing value
 
 if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
-	loggerFactory's inject(me)
+	loggerFactory's injectBasic(me)
 	logger's start()
 
 	set cases to listUtil's splitAndTrimParagraphs("
-		Manual: Run Shell
+		Run Shell
 		Manual: Run Shell Void
-		Manual: Change Directory
-		Manual: Run and Wait
+		Change Directory
 	")
 
 	set spotScript to script "core/spot-test"
@@ -57,18 +49,13 @@ on spotCheck()
 	set sut to decorate(sut)
 
 	if caseIndex is 1 then
-		log sut's runShell("docker ps -qf 'ancestor=roycetech/minecraft-server'")
-
-		-- logger's infof("Run echo command result: {}", sut's runShell("echo hello"))
+		logger's infof("Run echo command: {}", sut's runShell("echo hello"))
 
 	else if caseIndex is 2 then
 		sut's runShellVoid("echo world")
 
 	else if caseIndex is 3 then
 		sut's doCd("~/Desktop")
-
-	else if caseIndex is 4 then
-		sut's runAndWait("sleep 5")
 
 	end if
 
@@ -78,19 +65,16 @@ end spotCheck
 
 
 on decorate(termTabScript)
-	loggerFactory's inject(me)
-	set retry to retryLib's new()
+	loggerFactory's injectBasic(me)
 	set plutil to plutilLib's new()
 	set session to plutil's new("session")
+	set retry to retryLib's new()
 
-	tell application "Finder"
-		set localSessionPlist to text 8 thru -1 of (URL of folder "applescript-core" of (path to home folder) as text) & "session.plist"
-	end tell
-
-	script TerminalRunDecorator
+	script TerminalTabInstance
 		property parent : termTabScript
-		property SESSION_PLIST : localSessionPlist
-		property delayAfterRunShell : 0
+
+		(* This conflicted when declared on the outer script, so let's move it here instead. *)
+		property sessionPlist : missing value
 
 		(*
 			Runs a bash command waiting for its result.
@@ -108,7 +92,8 @@ on decorate(termTabScript)
 			session's deleteKey(propertyName)
 			-- logger's debugf("Running Command: \"{}\"", bashCommand)
 
-			set calcCommmand to format {"plutil -replace {} -string \"`{}`\" {}", {quoted form of propertyName, shellCommand, SESSION_PLIST}}
+			set localSessionPlist to my sessionPlist -- following code has issue referencing my properties directly.
+			set calcCommmand to format {"plutil -replace {} -string \"`{}`\" {}", {quoted form of propertyName, shellCommand, localSessionPlist}}
 			-- logger's debugf("Calculated Command: {}", calcCommmand)
 			set NO_RESULT to "_noresult_"
 			tell application "Terminal"
@@ -157,13 +142,11 @@ on decorate(termTabScript)
 				end if
 				do script shellCommand in my appWindow
 			end tell
-
-			delay delayAfterRunShell
 		end runShellVoid
 
 		on runAndWait(shellCommand)
 			runShellVoid(shellCommand)
-			delay 0.2 -- experiment from 0.1, SSH to EC2 stack on new install is crappy.
+			delay 0.1
 			waitForPrompt()
 			_refreshTabName()
 			delay 0.2 -- Seems to solve mysterious issues. 0.1 has issues, finding BSS stack reports incorrect result.
@@ -175,4 +158,10 @@ on decorate(termTabScript)
 			_refreshTabName()
 		end doCd
 	end script
+
+	tell application "Finder"
+		set TerminalTabInstance's sessionPlist to text 8 thru -1 of (URL of folder "applescript-core" of (path to home folder) as text) & "session.plist"
+	end tell
+
+	TerminalTabInstance
 end decorate

@@ -8,7 +8,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14.x/dec-terminal-prompt'
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14/dec-terminal-prompt'
 
 	@Migrated:
 		September 25, 2023 12:19 PM

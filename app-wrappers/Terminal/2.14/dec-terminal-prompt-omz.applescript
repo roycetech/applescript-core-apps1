@@ -6,7 +6,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14.x/dec-terminal-prompt-omz'
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14/dec-terminal-prompt-omz'
 
 	NOTES:
 		Handler hierarchy.

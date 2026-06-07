@@ -32,7 +32,7 @@
 		applescript-core-apps1
 
 	@Build:
-		make compile-terminal
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.12/terminal'
 
 	@Known Issues:
 		Breaks on macOS Ventura, when there is no existing Terminal window to launch from.

@@ -2,13 +2,13 @@
 	This is a wrapper to a Terminal tab's instance.
 
 	@Version:
-		2.14.x for macOS Sonoma
+		2.14 for macOS Sonoma
 
 	@Project:
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14.x/terminal-tab'
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14/terminal-tab'
 
 	@Testing Note:
 		WARNING: This script requires re-compilation each time there's a change on this file.

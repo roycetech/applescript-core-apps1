@@ -1,39 +1,46 @@
 (*
-	@Build:
-		make build-lib SOURCE="app-wrappers/Terminal/2.12.x/dec-terminal-prompt-sftp"
+	@Purpose:
+		This script includes handlers that encompass the output functionality of the terminal.
 
-	@Last Modified: 2026-03-29 10:16:44
+	@Project:
+		applescript-core-apps1
+
+	@Build:
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14/dec-terminal-output'
+
 *)
 
 use listUtil : script "core/list"
 use textUtil : script "core/string"
+
 use loggerFactory : script "core/logger-factory"
 
 use kbLib : script "core/keyboard"
 use retryLib : script "core/retry"
 
-
 property logger : missing value
-property retry : missing value
 property kb : missing value
+property retry : missing value
+property terminal : missing value
 
 if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
 
 on spotCheck()
-	loggerFactory's injectBasic(me)
+	loggerFactory's inject(me)
 	logger's start()
 
 	set cases to listUtil's splitAndTrimParagraphs("
+		INFO: NOOP
 		Manual: Recent Output
 		Manual: Last Output (With/out lastCommand, Shell, Non-Shell)
 		Complete Output
 		Wait for Output
-		Output Contains
 
+		Output Contains
 		Clear
 	")
 
-	set spotScript to script "core/spot-test"
+set spotScript to script "core/spot-test"
 	set spotClass to spotScript's new()
 	set spot to spotClass's new(me, cases)
 	set {caseIndex, caseDesc} to spot's start()
@@ -42,7 +49,7 @@ on spotCheck()
 		return
 	end if
 
-	set terminalLib to script "core/terminal"
+set terminalLib to script "core/terminal"
 	set terminal to terminalLib's new()
 	set frontTab to terminal's getFrontTab()
 
@@ -51,9 +58,11 @@ on spotCheck()
 
 
 	if caseIndex is 1 then
-		logger's infof("Recent Output: {}", frontTab's getRecentOutput())
 
 	else if caseIndex is 2 then
+		logger's infof("Recent Output: {}", frontTab's getRecentOutput())
+
+	else if caseIndex is 3 then
 		-- set frontTab's lastCommand to "ls"
 		logger's infof("Last Output: {}", frontTab's getLastOutput())
 
@@ -76,12 +85,13 @@ on spotCheck()
 end spotCheck
 
 
-on decorate(terminalTabScript)
-	set retry to retryLib's new()
+on decorate(termTabScript)
+	loggerFactory's inject(me)
 	set kb to kbLib's new()
+	set retry to retryLib's new()
 
-	script TerminalTabInstance
-		property parent : terminalTabScript
+	script TerminalOutputDecorator
+		property parent : termTabScript
 
 		(* Used to determine the amount of characters to include in the getRecentOutput handler. *)
 		property recentOutputChars : 1024
@@ -207,7 +217,10 @@ on decorate(terminalTabScript)
 			@Requires focus, make sure to handle refocus on the client code.
 		*)
 		on clear()
-			if isShellPrompt() then return runAndWait("clear && printf '\\e[3J'")
+			if isShellPrompt() then
+				runAndWait("clear && printf '\\e[3J'")
+				return
+			end if
 
 			focus()
 			kb's pressCommandKey("k")

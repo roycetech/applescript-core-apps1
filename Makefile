@@ -73,4 +73,5 @@ detect-deploy-type:  # Detects actual deployment type
 
 
 uninstall:
-	./scripts/uninstall.sh
+	# ./scripts/uninstall.sh
+	# Unsupported right now

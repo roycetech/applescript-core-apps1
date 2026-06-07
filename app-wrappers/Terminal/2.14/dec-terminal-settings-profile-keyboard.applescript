@@ -6,7 +6,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14.x/dec-terminal-settings-profile-keyboard'
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14/dec-terminal-settings-profile-keyboard'
 
 	@Created: Mon, Jun 02, 2025 at 06:30:46 AM
 	@Last Modified: 2026-03-24 17:45:57

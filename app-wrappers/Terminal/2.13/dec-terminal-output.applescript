@@ -6,7 +6,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Terminal/2.13.x/dec-terminal-output'
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.13/dec-terminal-output'
 
 *)
 

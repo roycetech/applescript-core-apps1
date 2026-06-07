@@ -7,7 +7,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14.x/dec-terminal-settings'
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.14/dec-terminal-settings'
 
 	@Created: Monday, December 23, 2024 at 6:55:56 AM
 	@Last Modified: 2026-03-24 17:45:57

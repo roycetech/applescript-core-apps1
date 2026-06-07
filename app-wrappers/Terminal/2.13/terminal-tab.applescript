@@ -5,7 +5,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Terminal/2.13.x/terminal-tab'
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.13/terminal-tab'
 
 	@Created: October 7, 2023 10:27 AM
 	@Last Modified: 2026-03-29 10:16:44

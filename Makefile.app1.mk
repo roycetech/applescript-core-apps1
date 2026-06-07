@@ -202,26 +202,31 @@ endif
 	@echo "Build System Settings completed"
 
 
+VERSION_TERMINAL_MAJOR_MINOR = $(shell osascript -e "tell application \"Terminal\" to version" | awk -F. '{print $$1 "." $$2}')
+$(debug     VERSION_TERMINAL_MAJOR_MINOR: $(VERSION_TERMINAL_MAJOR_MINOR))
+
+# dir — build when VERSION_TERMINAL_MAJOR_MINOR >= dir (subfolders of Terminal/)
+TERMINAL_VERSION_BUILDS := $(patsubst $(APP_WRAPPERS)/Terminal/%/,%,$(wildcard $(APP_WRAPPERS)/Terminal/*/))
+
 build-terminal:
+	# Older versions of scripts are built first and overwritten by newer versions.
 	@echo "Building Terminal scripts..."
 ifeq ($(shell [ $(OS_VERSION_MAJOR) -lt $(OS_MONTEREY) ] && echo yes),yes)
-	@echo "Untested macOS version for terminal. Development started at least on macOS Monterey (v12)."
+	@echo "Untested macOS version for Terminal. Development started at least on macOS Monterey (v12)."
 endif
 
-	$(call _build-app-version-scripts,Terminal 2.12.x,$(APP_WRAPPERS)/Terminal/2.12.x)
-
-ifeq ($(shell [ $(OS_VERSION_MAJOR) -gt $(OS_MONTEREY) ] && echo yes),yes)
-	$(call _build-app-version-scripts,Terminal 2.13.x,$(APP_WRAPPERS)/Terminal/2.13.x)
-endif
-
-ifeq ($(shell [ $(OS_VERSION_MAJOR) -gt $(OS_VENTURA) ] && echo yes),yes)
-	# For Sonoma and Sequoia
-	$(call _build-app-version-scripts,Terminal 2.14.x,$(APP_WRAPPERS)/Terminal/2.14.x)
-endif
-
-ifeq ($(shell [ $(OS_VERSION_MAJOR) -gt $(OS_SEQUOIA) ] && echo yes),yes)
-	$(call _build-app-version-scripts,Terminal 2.15.0,$(APP_WRAPPERS)/Terminal/2.15)
-endif
+	@for dir in $(TERMINAL_VERSION_BUILDS); do \
+		dir_mm=$$(echo "$$dir" | awk -F. '{print $$1 "." $$2}'); \
+		if echo "$(VERSION_TERMINAL_MAJOR_MINOR) $$dir_mm" | awk '{exit !($$1 >= $$2)}'; then \
+			echo "\nBuilding Terminal $$dir scripts..."; \
+			for file in "$(APP_WRAPPERS)/Terminal/$$dir"/*.applescript; do \
+				[ -e "$$file" ] || continue; \
+				no_ext=$${file%.applescript}; \
+				echo "Building $$file"; \
+				yes y | ./scripts/build-lib.sh "$$no_ext"; \
+			done; \
+		fi; \
+	done
 	$(call _build-script,libraries/sftp/dec-terminal-prompt-sftp)
 	@echo "Build Terminal completed\n"
 

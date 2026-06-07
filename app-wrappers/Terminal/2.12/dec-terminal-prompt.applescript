@@ -1,6 +1,6 @@
 (*
 	@Build:
-		make build-lib SOURCE="app-wrappers/Terminal/2.12.x/dec-terminal-prompt"
+		./scripts/build-lib.sh 'app-wrappers/Terminal/2.12/dec-terminal-prompt'
 
 	@Last Modified: 2026-03-29 10:16:44
 *)
