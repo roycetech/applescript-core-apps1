@@ -284,6 +284,7 @@ on new()
 	
 	set decSafariTabFinder to script "core/dec-safari-tab-finder"
 	set decSafariTabFinder2 to script "core/dec-safari-tab-finder2"
+	set decSafariWindowFinder to script "core/dec-safari-window-finder"
 	set decSafariUiNoncompact to script "core/dec-safari-ui-noncompact"
 	set decSafariSidebar to script "core/dec-safari-sidebar"
 	set decSafariKeychain to script "core/dec-safari-keychain"
