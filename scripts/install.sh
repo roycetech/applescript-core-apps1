@@ -35,4 +35,14 @@ sudo dseditgroup -o edit -a "$(whoami)" -t user wheel \
   && sudo chmod g+w "/Library/Script Libraries/core/app"
 
 cd "$PROJECT_DIR"
-make set-computer-deploy-type build-script-editor build-automator build-safari build-terminal
+make set-computer-deploy-type
+
+PROCESS_SCPT="/Library/Script Libraries/core/process.scpt"
+if [ ! -f "$PROCESS_SCPT" ]; then
+    echo "core/process not found; building from applescript-core..."
+    (cd "$PROJECT_CORE_DIR" && make build-process)
+else
+    echo "✅ core/process already installed: $PROCESS_SCPT"
+fi
+
+make build-script-editor build-automator build-safari build-terminal
