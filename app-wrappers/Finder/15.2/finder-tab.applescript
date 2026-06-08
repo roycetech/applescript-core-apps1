@@ -16,8 +16,6 @@ use textUtil : script "core/string"
 
 use loggerFactory : script "core/logger-factory"
 
-use decFinderSelection : script "core/dec-finder-selection"
-
 property logger : missing value
 
 if {"Script Editor", "Script Debugger", "osascript"} contains the name of current application then spotCheck()
@@ -66,6 +64,7 @@ end spotCheck
 (*  *)
 on new(windowId)
 	loggerFactory's inject(me)
+	set decFinderSelectionLib to script "core/dec-finder-selection"
 
 	script FinderTabInstance
 		property appWindow : missing value -- not syseve window.
@@ -137,7 +136,7 @@ on new(windowId)
 		end focus
 	end script
 
-	set thisFinderTabInstance to decFinderSelection's decorate(result)
+	set thisFinderTabInstance to decFinderSelectionLib's decorate(result)
 
 	tell application "Finder" to set appWindow of thisFinderTabInstance to window id windowId
 	thisFinderTabInstance
