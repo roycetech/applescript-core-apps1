@@ -25,11 +25,6 @@ on spotCheck()
 	set cases to listUtil's splitAndTrimParagraphs("
 		Manual: Regular Shell Prompt - Yes
 		Manual: Regular Shell Prompt - No
-		Manual: Redis Shell Prompt - Yes
-		Manual: Redis Shell Prompt - Yes With Lingering Command
-		Manual: Prompt Text - Non Redis
-
-		Manual: Prompt Text - Redis
 		Manual: Prompt Text - Non SFTP
 		Manual: Prompt Text - SFTP
 	")

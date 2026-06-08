@@ -91,22 +91,6 @@ uninstall-process-dock:
 	./scripts/factory-remove.sh ProcessInstance core/dec-process-dock
 
 
-build-redis:
-	@echo "Building Redis scripts..."
-	@if ! plutil -extract RedisCLI raw ~/applescript-core/config-lib-factory.plist &>/dev/null; then \
-		osascript ./scripts/setup-redis-cli.applescript; \
-	fi
-	$(call _build-script,libs/redis/redis)
-	@echo "Build redis scripts completed\n"
-
-build-redis-terminal:
-	@echo "Building Redis terminal scripts..."
-	$(call _build-script,libs/redis/dec-terminal-prompt-redis)
-	@echo "Build redis terminal scripts completed\n"
-
-install-redis: build-redis
-
-
 build-security-cli:
 	@echo "Building Security CLI scripts..."
 	$(call _build-script,libs/security-cli/security-cli)

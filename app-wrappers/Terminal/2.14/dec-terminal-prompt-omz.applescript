@@ -93,7 +93,7 @@ on spotCheck()
 	logger's infof("Prompt: [{}]", frontTab's getPrompt())
 	logger's infof("Prompt With Command (if command is present): {}", frontTab's getPromptText())
 
-	-- Check: zsh, bash, docker with/out command, redis, sftp, EC2 ssh
+	-- Check: zsh, bash, docker with/out command, sftp, EC2 ssh
 	logger's infof("Is Shell Prompt: {}", frontTab's isShellPrompt())
 
 	logger's infof("Is SSH: {}", frontTab's isSSH())
@@ -393,10 +393,6 @@ on decorate(termTabScript)
 			end tell
 
 			set {history, lastProcess} to _getHistoryAndLastProcess()
-
-			-- if last item of termProcesses is "redis-cli" then
-			-- 	return regex's matchesInString(redisPromptPattern() & "$", textUtil's rtrim(theText as text))
-			-- end if
 
 			-- if isSSH() then
 			-- 	return true

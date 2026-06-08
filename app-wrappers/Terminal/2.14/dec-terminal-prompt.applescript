@@ -69,7 +69,7 @@ on spotCheck()
 	set sut to extOutput's decorate(result)
 
 	----------------------------------------------------------------------------
-	-- Check: zsh, bash, docker with/out command, redis, sftp, EC2 ssh
+	-- Check: zsh, bash, docker with/out command, sftp, EC2 ssh
 	logger's infof("Is Shell Prompt: {}", sut's isShellPrompt())
 
 	----------------------------------------------------------------------------

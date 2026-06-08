@@ -71,7 +71,7 @@ on spotCheck()
 	logger's infof("Posix Path: {}", sut's getPosixPath())
 	logger's infof("Lingering Command: {}", sut's getLingeringCommand())
 
-	(* Manually test: zsh, bash, docker, sftp, redis-cli. *)
+	(* Manually test: zsh, bash, docker, sftp. *)
 	logger's infof("Is Shell Prompt: {}", sut's isShellPrompt())
 	logger's infof("Is Bash: {}", sut's isBash())
 	logger's infof("Is Zsh: {}", sut's isZsh())

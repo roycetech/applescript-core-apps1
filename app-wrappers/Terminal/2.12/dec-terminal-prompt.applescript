@@ -28,7 +28,7 @@ on spotCheck()
 	logger's start()
 
 	set cases to listUtil's splitAndTrimParagraphs("
-		Manual: Is Shell Prompt - zsh, bash, docker with/out command, redis, sftp, EC2 ssh
+		Manual: Is Shell Prompt - zsh, bash, docker with/out command, sftp, EC2 ssh
 		Manual: Wait for Prompt
 		Manual: Prompt With Command (Git/Non Git, Parens, Lingering Command)
 		Manual: Prompt (Git/Non Git, With/out Parens, With/out Lingering Command)
@@ -170,10 +170,6 @@ on decorate(termTabScript)
 			-- end tell
 
 			set {history, lastProcess} to _getHistoryAndLastProcess()
-
-			-- if last item of termProcesses is "redis-cli" then
-			-- 	return regex's matchesInString(redisPromptPattern() & "$", textUtil's rtrim(theText as text))
-			-- end if
 
 			if isSSH() then
 				return true

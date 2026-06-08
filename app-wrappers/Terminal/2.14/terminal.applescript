@@ -105,7 +105,7 @@ on spotCheck()
 	logger's infof("Posix Path: {}", frontTab's getPosixPath())
 	logger's infof("Lingering Command: {}", frontTab's getLingeringCommand())
 
-	(* Manually test: zsh, bash, docker, sftp, redis-cli. *)
+	(* Manually test: zsh, bash, docker, sftp. *)
 	logger's infof("Is Shell Prompt: {}", frontTab's isShellPrompt())
 	logger's infof("Is Bash: {}", frontTab's isBash())
 	logger's infof("Is Zsh: {}", frontTab's isZsh())

@@ -91,7 +91,7 @@ on spotCheck()
 	logger's infof("Tab Name: {}", sut's getTabName())
 	logger's infof("POSIX Path: {}", sut's getPosixPath())
 
-	(* Manually test: zsh, bash, docker, sftp, redis-cli. *)
+	(* Manually test: zsh, bash, docker, sftp. *)
 	logger's infof("Is Shell Prompt: {}", sut's isShellPrompt())
 	logger's infof("Is Bash: {}", sut's isBash())
 	logger's infof("Is Zsh: {}", sut's isZsh())

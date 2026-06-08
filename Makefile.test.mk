@@ -31,7 +31,6 @@ test: test-all
 test-unit:
 	osascript "test/libs/Test cliclick.applescript"
 	osascript "test/libs/Test log4as.applescript"
-	osascript "test/libs/Test redis.applescript"
 	osascript "test/core/Test date-time.applescript"
 	osascript "test/core/Test decorator.applescript"
 	osascript "test/core/Test file.applescript"
@@ -83,7 +82,6 @@ watch-integration: test-integration
 spot:  # Test single script here.
 # 	osascript 'apps/3rd-party/Google Chrome/131.0/dec-google-chrome-tab-finder.applescript'
 # 	osascript "test/core/Test file.applescript"
-# 	osascript "test/libs/Test redis.applescript"
 # 	osascript "test/core/Test date-time.applescript"
 # 	osascript "test/core/Test dec-terminal-path.applescript"
 # ifneq ($(OMZ_EXISTS),)
