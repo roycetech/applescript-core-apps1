@@ -173,7 +173,7 @@ install-safari-technology-preview: build-safari-technology-preview
 
 
 build-script-editor:
-	$(call _build-app-scripts-if-exists,Script Editor,$(APP_WRAPPERS)/Script Editor/2.11)
+	$(call _build-app-version-scripts,Script Editor 2.11,$(APP_WRAPPERS)/Script Editor/2.11)
 
 # OS_VERSION_MAJOR = $(OS_TAHOE) # Debugging only.
 # $(info     DEBUG: OS_VERSION_MAJOR: $(OS_VERSION_MAJOR))
