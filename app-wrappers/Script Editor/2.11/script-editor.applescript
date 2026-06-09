@@ -27,16 +27,6 @@ use textUtil : script "core/string"
 
 use loggerFactory : script "core/logger-factory"
 
-use scriptEditorTabLib : script "core/script-editor-tab"
-use decWindow : script "core/dec-script-editor-window"
-use decContent : script "core/dec-script-editor-content"
-use decCursor : script "core/dec-script-editor-cursor"
-use decSettings : script "core/dec-script-editor-settings"
-use decSettingsGeneral : script "core/dec-script-editor-settings-general"
-use decSettingsEditing : script "core/dec-script-editor-settings-editing"
-use decTabs : script "core/dec-script-editor-tabs"
-use decDialog : script "core/dec-script-editor-dialog"
-
 use configLib : script "core/config"
 use retryLib : script "core/retry"
 
@@ -162,7 +152,17 @@ on new()
 	loggerFactory's injectBasic(me)
 	set configSystem to configLib's new("system")
 	set retry to retryLib's new()
-	
+
+	set scriptEditorTabLib to script "core/script-editor-tab"
+	set decWindow to script "core/dec-script-editor-window"
+	set decContent to script "core/dec-script-editor-content"
+	set decCursor to script "core/dec-script-editor-cursor"
+	set decSettings to script "core/dec-script-editor-settings"
+	set decSettingsGeneral to script "core/dec-script-editor-settings-general"
+	set decSettingsEditing to script "core/dec-script-editor-settings-editing"
+	set decTabs to script "core/dec-script-editor-tabs"
+	set decDialog to script "core/dec-script-editor-dialog"
+
 	script ScriptEditorInstance
 		-- on isAtNewDocumentWindow
 		on isNewDocumentWindowPresent()
