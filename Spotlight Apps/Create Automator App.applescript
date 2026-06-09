@@ -29,6 +29,9 @@
 		Reads config-user.plist - AppleScript Projects Path
 		
 	@Known Issues:
+		Mon, Jun 08, 2026, at 09:46:04 PM - Permission error when creating an app in a VM.
+			Run: `$ sudo chown -R "$(whoami):admin" /Applications/AppleScript`
+			Verify with: `$ touch /Applications/AppleScript/.write-test && rm /Applications/AppleScript/.write-test && echo OK`
 		Sat, Oct 5, 2024 at 5:56:52 PM - Will not be able to create an app in the local namespace if it has a dependency
 			in the user namespace.
 			
