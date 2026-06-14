@@ -4,7 +4,7 @@
 # 	Contains the common app scripts for 1st and 3rd party apps.
 
 build-base-app:
-	@echo "\nBuilding Base App scripts..."
+	@echo "Building Base App scripts..."
 	$(call _build-script,base-app)
 	$(call _build-script,abstract-app-with-file-dialog)
 	@echo "Build Base App scripts completed\n"

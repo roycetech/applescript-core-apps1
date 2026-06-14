@@ -233,6 +233,10 @@ endif
 	@echo "Build Terminal completed\n"
 
 
+build-time-machine:
+	$(call _build-app-scripts,Time Machine 26.3,$(APP_WRAPPERS)/Time Machine/26.3)
+
+
 build-xcode:
 	$(call _build-app-scripts-if-exists,Xcode,apps/3rd-party/Xcode/15.4)
 
