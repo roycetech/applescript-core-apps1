@@ -10,7 +10,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Automator/2.10-Tahoe/automator'
+		./scripts/build-lib.sh app-wrappers/Automator/2.10-Tahoe/automator
 
 	WARNING:
 		Assumes that the Automator app is not used or opened for purposes other than the exclusive use of this script.
@@ -19,6 +19,11 @@
 	@Last Modified: 2026-03-24 17:45:51
 
 	@Change Logs:
+		Sat, Jun 13, 2026, at 03:36:56 PM 
+			- Add isChooseDocumentTypeDialogPresent() handler.
+			- Add menuFileNew() handler.
+			- Add menuFileClose() handler.
+			
 		Tue, Nov 18, 2025, at 10:25:20 AM - Tahoe UI restructure.
 *)
 
@@ -54,7 +59,7 @@ if {"Script Editor", "Script Debugger", "osascript"} contains the name of curren
 on spotCheck()
 	loggerFactory's inject(me)
 	logger's start()
-
+	
 	set processLib to script "core/process"
 	set dockLib to script "core/dock"
 	set dock to dockLib's new()
@@ -65,8 +70,14 @@ on spotCheck()
 		Manual: E2E: Create Voice Command App
 		Manual: Show Side Bar
 		Manual: Wait for Save ready
-	")
 
+		Manual: 
+		Dummy
+		Dummy
+		Dummy
+		Dummy
+	")
+	
 	set spotScript to script "core/spot-test"
 	set spotClass to spotScript's new()
 	set spot to spotClass's new(me, cases)
@@ -75,25 +86,28 @@ on spotCheck()
 		logger's finish()
 		return
 	end if
-
+	
 	set sut to new()
 	set automatorProcess to processLib's new("Automator")
-
+	
 	if usr's getDeploymentType() is equal to "computer" then
 		set scriptMonPath to "/Applications/AppleScript"
-
+		
 	else
 		set scriptMonPath to ""
-
+		
 	end if
-
+	
+	logger's infof("Is choose document type dialog present: {}", sut's isChooseDocumentTypeDialogPresent())
+	logger's infof("Is open document dialog present: {}", sut's isOpenDocumentDialogPresent())
+	
 	if caseIndex is 2 then
 		-- automatorProcess's forceQuit()
 		tell sut
 			forceQuitApp()
 			launchAndWaitReady()
 			dock's clickApp("Automator") -- Mitigate intermittent app not launching problem
-
+			
 			createNewDocument()
 			selectApplicationType()
 			addAppleScriptAction()
@@ -102,33 +116,33 @@ on spotCheck()
 			triggerSave()
 			waitForSaveReady()
 			enterScriptName("Spot Check Only")
-
+			
 			logger's debug("Trigger Go To Folder")
 			triggerGoToFolder()
-
+			
 			logger's debug("Waiting for the go to folder input field")
 			waitForGoToFolderInputField()
-
+			
 			logger's debug("Entering the default save path")
 			enterDefaultSavePath()
-
+			
 			logger's debug("Waiting to find the save path...")
 			set savePathFound to waitToFindSavePath()
-
+			
 			if savePathFound is missing value then
 				error "The save path was not found: " & savePath & ". Check config-system['AppleScript Apps path']"
 			end if
-
+			
 			acceptFoundSavePath()
-
+			
 			tell me to error "abort" -- IS THIS PROMINENT ENOUGH?!!!
 			-- clickSave()
 		end tell
 		tell application "Automator" to quit
-
+		
 	else if caseIndex is 3 then
 		automatorProcess's forceQuit()
-
+		
 		(* Commands are similar to when creating a regular app unless specified *)
 		tell sut
 			launchAndWaitReady()
@@ -136,27 +150,27 @@ on spotCheck()
 			selectDictationCommand()
 			addAppleScriptAction()
 			writeRunScript("create-automator-app")
-
+			
 			clickCommandEnabled() -- Voice Specific
 			setCommandPhrase("Say this") -- Voice Specific
 			compileScript()
 			triggerSave()
 			waitForSaveReady()
-
+			
 			enterScriptName("Spot Check Voice Command")
 			-- Voice: Save destination is not available for voice commands.
 			clickSave()
 		end tell
-
+		
 	else if caseIndex is 4 then
 		tell sut to showSidebar()
-
+		
 	else if caseIndex is 5 then
 		set newWindowName of sut to "Untitled.app (Application)"
 		sut's waitForSaveReady()
-
+		
 	end if
-
+	
 	spot's finish()
 	logger's finish()
 end spotCheck
@@ -169,13 +183,47 @@ on new()
 	set syseve to syseveLib's new()
 	set retry to retryLib's new()
 	set usr to usrLib's new()
-
+	
 	(* Note: Handlers are ordered by which step they are called. *)
 	script AutomatorInstance
+		
 		property newWindowName : missing value
+		
+		on menuFileNew()
+			if running of application "Automator" is false then return
+			
+			tell application "System Events" to tell process "Automator"
+				click menu item "New" of menu 1 of menu bar item "File" of menu bar 1
+			end tell
+		end menuFileNew
+		
+		on menuFileClose()
+			if running of application "Automator" is false then return
+			
+			tell application "System Events" to tell process "Automator"
+				click menu item "Close" of menu 1 of menu bar item "File" of menu bar 1
+			end tell
+		end menuFileClose
+		
+		on isOpenDocumentDialogPresent()
+			if running of application "Automator" is false then return false
+			
+			tell application "System Events" to tell process "Automator"
+				exists (button "New Document" of splitter group 1 of window "Open")
+			end tell
+		end isOpenDocumentDialogPresent
+		
+		on isChooseDocumentTypeDialogPresent()
+			if running of application "Automator" is false then return false
+			
+			tell application "System Events" to tell process "Automator"
+				exists (sheet 1 of window 1)
+			end tell
+		end isChooseDocumentTypeDialogPresent
+		
 		on launchAndWaitReady()
 			activate application "Automator"
-
+			
 			script AppWaiter
 				tell application "System Events" to tell process "Automator"
 					if exists button "Choose" of first sheet of front window then return true
@@ -183,7 +231,7 @@ on new()
 			end script
 			exec of retry on result for 5 by 1
 		end launchAndWaitReady
-
+		
 		on createNewDocument()
 			script WaitOpen
 				tell application "System Events" to tell process "Automator"
@@ -199,8 +247,8 @@ on new()
 			exec of retry on result for 30 by 1
 			if result is missing value then error "Failed"
 		end createNewDocument
-
-
+		
+		
 		(* Using key strokes *)
 		on selectDictationCommand()
 			activate application "Automator"
@@ -213,12 +261,12 @@ on new()
 			end tell
 			set my newWindowName to "Untitled (Dictation Command)"
 		end selectDictationCommand
-
-
+		
+		
 		(* Respond to a choose document type dialog by using key strokes *)
 		on selectApplicationType()
 			if running of application "Automator" is false then return
-
+			
 			activate application "Automator" -- try this first instead of below, made it similar to when creating voice command.
 			-- delay 1 -- Attempt to fix breakage, default is being selected.
 			tell application "System Events"
@@ -227,11 +275,11 @@ on new()
 			end tell
 			set my newWindowName to "Untitled (Application)"
 		end selectApplicationType
-
-
+		
+		
 		on addAppleScriptAction()
 			if running of application "Automator" is false then return
-
+			
 			showSidebar()
 			activate application "Automator"
 			tell application "System Events" to tell process "Automator" to keystroke "Run AppleScript"
@@ -241,11 +289,11 @@ on new()
 			end repeat
 			delay 0.1 -- convert to wait.
 		end addAppleScriptAction
-
-
+		
+		
 		on showSidebar()
 			if running of application "Automator" is false then return
-
+			
 			script ErrorAvoider
 				tell application "System Events" to tell process "Automator"
 					if newWindowName is missing value then set newWindowName to name of front window
@@ -256,39 +304,39 @@ on new()
 			end script
 			exec of retry on result for 10 by 0.1 -- Because it fails to get the window immediately after the doc type selection without the retry.
 		end showSidebar
-
-
+		
+		
 		on setCommandPhrase(commandPhrase)
 			if running of application "Automator" is false then return
-
+			
 			tell application "System Events" to tell process "Automator"
 				try
 					set value of value indicator 1 of scroll bar 1 of scroll area 1 of splitter group 1 of splitter group 1 of window (my newWindowName) to 0
 				end try -- Fail if scroll bar is absent, everything is visible.
 			end tell
-
+			
 			tell application "System Events" to tell process "Automator"
 				set theTextField to text field 1 of list 1 of scroll area 1 of splitter group 1 of splitter group 1 of window (my newWindowName)
 				set focused of theTextField to true
 				set value of theTextField to commandPhrase
 			end tell
 		end setCommandPhrase
-
-
+		
+		
 		on clickCommandEnabled()
 			if running of application "Automator" is false then return
-
+			
 			tell application "System Events" to tell process "Automator"
 				click checkbox "Command Enabled" of list 1 of scroll area 1 of splitter group 1 of splitter group 1 of window (my newWindowName)
 			end tell
 		end clickCommandEnabled
-
+		
 		on triggerSave()
 			if running of application "Automator" is false then return
-
+			
 			kb's pressCommandKey("s")
 		end triggerSave
-
+		
 		on waitForSaveReady()
 			script WaitSaveButton
 				tell application "System Events" to tell process "Automator"
@@ -299,16 +347,16 @@ on new()
 			exec of retry on result for 10
 			assertThat of std given condition:result is not missing value, messageOnFail:"Save button was not found"
 		end waitForSaveReady
-
+		
 		on enterScriptName(scriptName)
 			kb's insertTextByPasting(scriptName)
 			-- set the clipboard to scriptNameOnly
 		end enterScriptName
-
+		
 		on triggerGoToFolder()
 			kb's pressCommandShiftKey("g")
 		end triggerGoToFolder
-
+		
 		on waitForGoToFolderInputField()
 			script WaitInputField
 				tell application "System Events" to tell process "Automator"
@@ -317,27 +365,27 @@ on new()
 			end script
 			exec of retry on result for 10
 		end waitForGoToFolderInputField
-
+		
 		on enterDefaultSavePath()
 			tell application "System Events"
 				if usr's getDeploymentType() is equal to "computer" then
 					set domainObject to local domain
 				else
 					set domainObject to user domain
-
+					
 				end if
 				set savePath to POSIX path of (folder "AppleScript" of applications folder of domainObject)
 			end tell
-
+			
 			logger's debugf("savePath: {}", savePath)
-
+			
 			enterSavePath(savePath)
 		end enterDefaultSavePath
-
+		
 		on enterSavePath(savePath)
 			kb's insertTextByPasting(savePath)
 		end enterSavePath
-
+		
 		on waitToFindSavePath()
 			script WaitFoundPath
 				tell application "System Events" to tell process "Automator"
@@ -346,27 +394,27 @@ on new()
 			end script
 			exec of retry on result for 10
 		end waitToFindSavePath
-
+		
 		on acceptFoundSavePath()
 			kb's pressKey("return")
 		end acceptFoundSavePath
-
+		
 		on clickSave()
 			if running of application "Automator" is false then return
-
+			
 			tell application "System Events" to tell process "Automator"
 				-- click button "Save" of sheet 1 of window 1
 				click button "Save" of splitter group 1 of sheet 1 of window 1
 			end tell
 		end clickSave
-
+		
 		(*
 			Fails when automator is active in the dock, and it could not be killed
 			programmatically. Thus the pkill. Re-written on December 19, 2022.
 		*)
 		on forceQuitApp()
 			if running of application "Automator" is false then return
-
+			
 			logger's debug("Automator IS running...")
 			script DiscardChanges
 				tell application "System Events" to tell process "Automator"
@@ -384,26 +432,26 @@ on new()
 					end try
 				end tell
 			end script
-
+			
 			tell application "Automator"
 				ignoring application responses
 					close workflows
 				end ignoring
 				exec of retry on DiscardChanges for 5
-
+				
 				quit
 				try
 					do shell script "pkill Automator" -- required that app is not running in the Dock.
 					delay 0.1
 				end try
-
+				
 				repeat while its running is true
 					delay 0.1
 				end repeat
 			end tell
 		end forceQuitApp
 	end script
-
+	
 	set applescriptDecorator to script "core/dec-automator-applescript"
 	applescriptDecorator's decorate(AutomatorInstance)
 	set decorator to decoratorLib's new(result)
