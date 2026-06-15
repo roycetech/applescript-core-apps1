@@ -76,7 +76,7 @@ uninstall-automator:
 	@echo "TODO"
 
 
-build-calendar: build-base-app build-process
+build-calendar: build-process
 	@echo "Building Calendar scripts..."
 	$(call _build-script, $(APP_WRAPPERS)/Calendar/11.0/dec-calendar-view)
 	$(call _build-script, $(APP_WRAPPERS)/Calendar/15.0/calendar-event)
@@ -130,7 +130,7 @@ $(debug     VERSION_SAFARI_MAJOR_MINOR: $(VERSION_SAFARI_MAJOR_MINOR))
 # dir — build when VERSION_SAFARI_MAJOR_MINOR >= dir (subfolders of Safari/, excluding 16.0)
 SAFARI_VERSION_BUILDS := $(filter-out 16.0,$(patsubst $(APP_WRAPPERS)/Safari/%/,%,$(wildcard $(APP_WRAPPERS)/Safari/*/)))
 
-build-safari: build-base-app
+build-safari:
 	# Older versions of scripts are built first and overwritten by newer versions.
 	@echo "Building Safari 16.0 scripts"
 	$(call _build-script,$(APP_WRAPPERS)/Safari/16.0/safari-tab)
