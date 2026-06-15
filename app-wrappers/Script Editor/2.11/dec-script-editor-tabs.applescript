@@ -43,7 +43,10 @@ on spotCheck()
 		return
 	end if
 	
-	set sut to new()
+	set sutLib to script "core/script-editor"
+	set sut to sutLib's new()
+	set sut to decorate(sut)
+	
 	if caseIndex is 1 then
 		
 	else if caseIndex is 2 then
@@ -124,4 +127,4 @@ on decorate(mainScript)
 			end tell
 		end switchTabByIndex
 	end script
-end new
+end decorate
