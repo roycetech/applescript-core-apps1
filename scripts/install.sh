@@ -45,4 +45,4 @@ else
     echo "✅ core/process already installed: $PROCESS_SCPT"
 fi
 
-make build-base-app build-automator build-finder install-safari build-script-editor build-terminal
+make build-base-app build-automator build-finder install-safari build-script-editor build-system-settings-build-terminal
