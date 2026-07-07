@@ -63,11 +63,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(terminalInstance)
 	loggerFactory's inject(me)
 
 	script TerminalSettingsProfileWindowDecorator
-		property parent : mainScript
+		property parent : terminalInstance
 
 		on toggleDimensions()
 			if running of application "Terminal" is false then return

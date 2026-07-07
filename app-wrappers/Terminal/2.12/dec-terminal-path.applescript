@@ -73,11 +73,11 @@ on spotCheck()
 end spotCheck
 
 
-on decorate(termTabScript)
+on decorate(terminalTabInstance)
 	loggerFactory's inject(me)
 
 	script TerminalTabInstance
-		property parent : termTabScript
+		property parent : terminalTabInstance
 		property _posixPath : missing value
 
 		on getPosixPath()

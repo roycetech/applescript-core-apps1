@@ -74,11 +74,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(scriptEditorInstance)
 	loggerFactory's inject(me)
 	
 	script ScriptEditorSettingsDecorator
-		property parent : mainScript
+		property parent : scriptEditorInstance
 		
 		on isSettingsWindowPresent()
 			if running of application "Script Editor" is false then return false

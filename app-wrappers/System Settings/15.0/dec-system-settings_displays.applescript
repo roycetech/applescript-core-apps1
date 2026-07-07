@@ -74,11 +74,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	
 	script SystemSettingsDisplaysDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on isAutomaticallyAdjustBrightness()
 			if running of application "System Settings" is false then return false

@@ -95,11 +95,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(finderInstance)
 	loggerFactory's inject(me)
 
 	script FinderViewDecorator
-		property parent : mainScript
+		property parent : finderInstance
 
 
 		on isPreviewVisible()

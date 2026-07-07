@@ -82,11 +82,11 @@ end newSpotBase
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(calendarInstance)
 	set usr to usrLib's new()
 
 	script CalendarWithViewInstance
-		property parent : mainScript
+		property parent : calendarInstance
 
 		on getViewType()
 			if running of application "Calendar" is false then return missing value

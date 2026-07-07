@@ -66,11 +66,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	
 	script SafariSettingsGeneralDecorator
-		property parent : mainScript
+		property parent : safariInstance
 		
 		on isOpenSafeFilesAfterDownloading()
 			set settingsWindow to getSettingsWindow()

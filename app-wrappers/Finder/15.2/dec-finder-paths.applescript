@@ -76,11 +76,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(finderInstance)
 	loggerFactory's inject(me)
 
 	script FinderPathsDecorator
-		property parent : mainScript
+		property parent : finderInstance
 
 
 		on getFilePath(fileObject)

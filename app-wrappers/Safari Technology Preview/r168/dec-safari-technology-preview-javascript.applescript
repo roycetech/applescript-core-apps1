@@ -60,13 +60,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	set safariTechPreview to safariTechPreviewLib's new()
 	logger's debug("decorating...")
 	
 	script ScriptSafariTechnologyPreviewJavaScript
-		property parent : mainScript
+		property parent : safariInstance
 		
 		on runScriptPlain(scriptText)
 			set theTab to _getTab()

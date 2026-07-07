@@ -83,11 +83,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	
 	script SystemSettingsLockScreenDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on revealLockScreen()
 			if running of application "System Settings" is false then

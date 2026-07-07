@@ -125,13 +125,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 	set retry to retryLib's new()
 
 	script SafariInspectorDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 
 		on runJavaScriptViaInspector(javaScriptCode)

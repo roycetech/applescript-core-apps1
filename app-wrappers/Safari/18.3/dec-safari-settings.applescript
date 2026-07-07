@@ -90,11 +90,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	
 	script SafariPreferencesDecorator
-		property parent : mainScript
+		property parent : safariInstance
 		
 		on showSettings()
 			showPreferences()

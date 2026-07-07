@@ -68,11 +68,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	script SafariSettingsExtensionsDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		(*
 			@returns true if extension is toggled.

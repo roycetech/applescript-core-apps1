@@ -71,12 +71,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 	
 	script SystemSettingsDesktopAndDockDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on revealDesktopAndDock()
 			if running of application "System Settings" is false then

@@ -83,14 +83,14 @@ on spotCheck()
 end spotCheck
 
 
-on decorate(termTabScript)
+on decorate(terminalTabInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 	set retry to retryLib's new()
 	set terminal to terminalLib's new()
 
 	script TerminalTabInstance
-		property parent : termTabScript
+		property parent : terminalTabInstance
 
 		(* Used to determine the amount of characters to include in the getRecentOutput handler. *)
 		property recentOutputChars : 1024

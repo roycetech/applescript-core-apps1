@@ -72,11 +72,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	script SafariSettingsAdvancedDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		on respondAllow()
 			set settingsWindow to getSettingsWindow()

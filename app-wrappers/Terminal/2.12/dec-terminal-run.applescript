@@ -64,14 +64,14 @@ on spotCheck()
 end spotCheck
 
 
-on decorate(termTabScript)
+on decorate(terminalTabInstance)
 	loggerFactory's injectBasic(me)
 	set plutil to plutilLib's new()
 	set session to plutil's new("session")
 	set retry to retryLib's new()
 
 	script TerminalTabInstance
-		property parent : termTabScript
+		property parent : terminalTabInstance
 
 		(* This conflicted when declared on the outer script, so let's move it here instead. *)
 		property sessionPlist : missing value

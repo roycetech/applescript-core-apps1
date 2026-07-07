@@ -6,7 +6,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Mail/16.0/dec-mail-selection'
+		./scripts/build-lib.sh app-wrappers/Mail/16.0/dec-mail-selection
 
 	@Created: Sun, Feb 15, 2026 at 06:21:28 PM
 	@Last Modified: 2026-03-24 17:45:52
@@ -21,12 +21,12 @@ if {"Script Editor", "Script Debugger", "osascript"} contains the name of curren
 on spotCheck()
 	loggerFactory's inject(me)
 	logger's start()
-
+	
 	set listUtil to script "core/list"
 	set cases to listUtil's splitAndTrimParagraphs("
 		Main
 	")
-
+	
 	set spotScript to script "core/spot-test"
 	set spotClass to spotScript's new()
 	set spot to spotClass's new(me, cases)
@@ -35,53 +35,53 @@ on spotCheck()
 		logger's finish()
 		return
 	end if
-
+	
 	-- activate application ""
 	set sutLib to script "core/mail"
 	set sut to sutLib's new()
 	set sut to decorate(sut)
-
+	
 	logger's infof("Selected account name: {}", sut's getSelectedAccountName())
 	logger's infof("Selected mailbox name: {}", sut's getSelectedMailboxName())
 	logger's infof("Selected message ID: {}", sut's getSelectedMessageId())
-
+	
 	if caseIndex is 1 then
-
+		
 	else if caseIndex is 2 then
-
+		
 	else if caseIndex is 3 then
-
+		
 	else
-
+		
 	end if
-
+	
 	spot's finish()
 	logger's finish()
 end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(mailInstance)
 	loggerFactory's inject(me)
-
+	
 	script MailSelectionDecorator
-		property parent : mainScript
-
+		property parent : mailInstance
+		
 		on selectMessage(accountName, mailboxName, messageId)
 			tell application "Mail"
-
+				
 				first mailbox of account accountName whose name contains mailboxName
 				set targetMessage to the first message of result whose id is messageId
-
+				
 				set selected messages of front message viewer to {targetMessage}
 			end tell
 		end selectMessage
-
-
+		
+		
 		on getSelectedAccountName()
 			set mainWindow to getMainWindow()
 			if mainWindow is missing value then return missing value
-
+			
 			tell application "Mail"
 				try
 					set selectedItem to selection
@@ -90,15 +90,15 @@ on decorate(mainScript)
 					return name of result
 				end try
 			end tell
-
+			
 			missing value
 		end getSelectedAccountName
-
-
+		
+		
 		on getSelectedMailboxName()
 			set mainWindow to getMainWindow()
 			if mainWindow is missing value then return missing value
-
+			
 			tell application "Mail"
 				try
 					set selectedItem to selection
@@ -106,11 +106,11 @@ on decorate(mainScript)
 					return the name of the mailbox of result
 				end try
 			end tell
-
+			
 			missing value
 		end getSelectedMailboxName
-
-
+		
+		
 		on getSelectedMessageId()
 			tell application "Mail"
 				try
@@ -122,7 +122,7 @@ on decorate(mainScript)
 					return id of result
 				end try
 			end tell
-
+			
 			missing value
 		end getSelectedMessageId
 	end script

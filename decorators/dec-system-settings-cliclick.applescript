@@ -67,13 +67,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set clip to clipLib's new()
 	set cliclick to cliclickLib's new()
 
 	script SystemSettingsDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 
 		on getPassword()
 			if running of application "System Settings" is false then return missing value

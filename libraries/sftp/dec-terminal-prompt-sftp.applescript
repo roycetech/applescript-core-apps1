@@ -60,9 +60,9 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(terminalTabInstance)
 	script TerminalTabInstance -- shadow the original
-		property parent : mainScript
+		property parent : terminalTabInstance
 
 		on getPrompt()
 			if isSFTP() then

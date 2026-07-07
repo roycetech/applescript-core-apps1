@@ -71,11 +71,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	
 	script SystemSettingsSoundsDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on revealInternetAccounts()
 			if running of application "System Settings" is false then

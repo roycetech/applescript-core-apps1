@@ -73,11 +73,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	script SafariProfileDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		(* Checks available profiles via the Safari icon in the Dock. *)
 		on hasWindowWithProfile(profileName)

@@ -120,7 +120,7 @@ on spotCheck()
 end spotCheck
 
 
-on decorate(termTabScript)
+on decorate(terminalTabInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 	set omz to script "core/oh-my-zsh"
@@ -128,7 +128,7 @@ on decorate(termTabScript)
 	set computedDefaultPrompt to omz's OMZ_ARROW & "  "
 	-- logger's debugf("computedDefaultPrompt: {}", computedDefaultPrompt)
 	script TerminalPromptOmzDecorator
-		property parent : termTabScript
+		property parent : terminalTabInstance
 
 		property defaultPrompt : computedDefaultPrompt
 		property promptMarker : omz's OMZ_ARROW & "  "

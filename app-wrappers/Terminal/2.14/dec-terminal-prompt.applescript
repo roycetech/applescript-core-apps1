@@ -97,7 +97,7 @@ on spotCheck()
 end spotCheck
 
 
-on decorate(termTabScript)
+on decorate(terminalTabInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 
@@ -105,7 +105,7 @@ on decorate(termTabScript)
 	-- logger's debugf("computedDefaultPrompt: {}", computedDefaultPrompt)
 
 	script TerminalPromptDecorator
-		property parent : termTabScript
+		property parent : terminalTabInstance
 		property defaultPrompt : computedDefaultPrompt
 
 

@@ -59,11 +59,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(mailInstance)
 	loggerFactory's inject(me)
 	
 	script MailMessageDecorator
-		property parent : mainScript
+		property parent : mailInstance
 
 		on deleteMessage()
 			set messageWindow to getMessageWindow()

@@ -67,11 +67,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(scriptEditorInstance)
 	loggerFactory's inject(me)
 	
 	script ScriptEditorSettingsEditingDecorator
-		property parent : mainScript
+		property parent : scriptEditorInstance
 		
 		on isSuggestCompletionsWhileTyping()
 			if running of application "Script Editor" is false then return

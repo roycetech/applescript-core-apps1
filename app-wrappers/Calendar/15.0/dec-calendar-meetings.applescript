@@ -84,7 +84,7 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(calendarInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 	set dateTime to dateTimeLib's new()
@@ -92,7 +92,7 @@ on decorate(mainScript)
 	set uiutil to uiutilLib's new()
 
 	script CalendarMeetingsDecorator
-		property parent : mainScript
+		property parent : calendarInstance
 
 
 		on isPopOverPresent()

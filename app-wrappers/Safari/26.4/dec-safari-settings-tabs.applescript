@@ -70,11 +70,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	
 	script SafariSettingsTabsDecorator
-		property parent : mainScript
+		property parent : safariInstance
 		
 		on getTabLayout()
 			set settingsWindow to getSettingsWindow()

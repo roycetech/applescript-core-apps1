@@ -71,14 +71,14 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	set uiutil to uiutilLib's new()
 	set retry to retryLib's new()
 
 	script SafariSidebarDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		on isSidebarVisible()
 			if running of application "Safari" is false then return false

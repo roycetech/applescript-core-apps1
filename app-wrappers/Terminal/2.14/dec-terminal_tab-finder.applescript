@@ -163,12 +163,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(terminalInstance)
 	loggerFactory's inject(me)
 	set winUtil to winUtilLib's new()
 
 	script TerminalTabFinderInstance
-		property parent : mainScript
+		property parent : terminalInstance
 
 		on findFirstNonSshTab()
 			if running of application "Terminal" is false then return false

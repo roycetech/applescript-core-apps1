@@ -166,13 +166,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(scriptEditorInstance)
 	loggerFactory's inject(me)
 	set considerCase of textUtil to true
 	
 	script ScriptEditorContentDecorator
 		(* Reference to ScriptEditorInstance *)
-		property parent : mainScript
+		property parent : scriptEditorInstance
 		property textView : missing value
 		property windowTitle : "Temp Document"
 		

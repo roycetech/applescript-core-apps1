@@ -118,11 +118,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(finderInstance)
 	loggerFactory's inject(me)
 
 	script FinderFilesDecorator
-		property parent : mainScript
+		property parent : finderInstance
 
 		(* *)
 		on createFile(sourceFile, targetFolder, newFilename)

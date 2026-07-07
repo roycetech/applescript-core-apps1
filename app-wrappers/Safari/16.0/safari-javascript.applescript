@@ -114,13 +114,13 @@ end spotCheck
 
 -- Start of actual handlers ================
 
-on decorate(safariTab)
+on decorate(safariTabInstance)
 	loggerFactory's injectBasic(me)
 	set configSystem to configLib's new("system")
 	set retry to retryLib's new()
 
 	script SafariJavaScriptDecorator
-		property parent : safariTab
+		property parent : safariTabInstance
 		property findRunMax : 0
 		property findRetrySleep : 0
 

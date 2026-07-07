@@ -80,7 +80,7 @@ on spotCheck()
 end spotCheck
 
 
-on decorate(termTabScript)
+on decorate(terminalTabInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 	set plutil to plutilLib's new()
@@ -88,7 +88,7 @@ on decorate(termTabScript)
 	set session to plutil's new("session")
 
 	script TerminalTabInstance
-		property parent : termTabScript
+		property parent : terminalTabInstance
 
 		(*
 			Runs a bash command waiting for its result.

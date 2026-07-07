@@ -72,13 +72,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 	set delayAfterKeySeconds of kb to 0.05
 
 	script SafariKeychainDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		on showOtherPasswords()
 			if running of application "Safari" is false then return

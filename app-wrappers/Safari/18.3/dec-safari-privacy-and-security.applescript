@@ -109,12 +109,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 
 	script SafariPrivacyAndDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		on isLocationPromptPresent()
 			run TopLevel's newLocationPromptPresenceLambda()

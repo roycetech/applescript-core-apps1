@@ -75,12 +75,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 	
 	script SystemSettingsAccessibilityVoiceControlDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		(*
 			@returns true of Voice control is active.

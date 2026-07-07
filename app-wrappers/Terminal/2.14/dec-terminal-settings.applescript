@@ -148,13 +148,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(terminalInstance)
 	loggerFactory's inject(me)
 
 	set kb to kbLib's new()
 
 	script TerminalSettingsDecorator
-		property parent : mainScript
+		property parent : terminalInstance
 
 		on getSettingsWindow()
 			if running of application "Terminal" is false then return missing value

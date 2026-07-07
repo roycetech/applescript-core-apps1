@@ -59,11 +59,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(finderInstance)
 	loggerFactory's inject(me)
 
 	script FinderDialogDecorator
-		property parent : mainScript
+		property parent : finderInstance
 
 		on respondEmptyTrash()
 			tell application "System Events" to tell process "Finder"

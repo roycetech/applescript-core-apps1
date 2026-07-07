@@ -82,13 +82,13 @@ end spotCheck
 
 
 (*
-	@mainScript - SafariInstance
+	@safariInstance - SafariInstance
 *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	
 	script SafariSettingsDecorator
-		property parent : mainScript
+		property parent : safariInstance
 		
 		on showSettings()
 			if isSettingsWindowPresent() then return

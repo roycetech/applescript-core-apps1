@@ -201,12 +201,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(scriptEditorInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 	
 	script ScriptEditorCursorDecorator
-		property parent : mainScript
+		property parent : scriptEditorInstance
 		property rememberedCursorPositionStart : missing value
 		
 		(*
