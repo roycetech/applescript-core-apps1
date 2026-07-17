@@ -10,9 +10,10 @@
 		./scripts/build-lib.sh app-wrappers/Safari/26.5/dec-safari-tab-group
 
 	@Created: Fri, Jul 10, 2026, at 10:13:51 PM
-	@Last Modified: 2026-04-03 18:06:56
-
+	@Last Modified: 2026-04-03 18:06:56 
+ 
 	@Change Logs: 
+		Thu, Jul 16, 2026, at 12:34:09 PM - Updated implementation for getGroupName and switchGroup
 		Fri, Jul 10, 2026, at 10:13:33 PM - Duplicated from 26.4
 *)
 use textUtil : script "core/string"
@@ -42,6 +43,7 @@ on spotCheck()
 		Manual: Switch to applescript-core
 		Manual: Switch to Default
 		Manual: Move current tab to a group
+		Manual: Switch Group to Monitoring
 	")
 	
 	set spotScript to script "core/spot-test"
@@ -60,7 +62,7 @@ on spotCheck()
 	
 	logger's infof("Integration: Sidebar visible: {}", sut's isSidebarVisible())
 	logger's infof("Is Default Group: {}", sut's isDefaultGroup())
-	logger's infof("Group name before: {}", sut's getGroupName())
+	logger's infof("Group name before: {}", sut's getGroupName()) -- Disruptive!
 	logger's infof("Integration: Is Compact: {}", sut's isCompact())
 	
 	-- logger's debugf("Tab groups divider index: {}", sut's _getTabGroupsDividerIndex())
@@ -78,9 +80,16 @@ on spotCheck()
 	else if caseIndex is 4 then
 		set sutGroupName to "Unicorn"
 		set sutGroupName to "Shopping"
+		
 		logger's debugf("sutGroupName: {}", sutGroupName)
 		
 		sut's moveCurrentTabToGroup(sutGroupName)
+		
+	else if caseIndex is 5 then
+		set emoji to script "core/emoji"
+		set sutGroupName to "Monitoring"
+		sut's switchGroup(sutGroupName & space & emoji's EYE)
+		
 	else
 		
 	end if
@@ -180,15 +189,20 @@ on decorate(safariInstance)
 			if isDefaultGroup() then return DEFAULT_GROUP_NAME
 			
 			set sideBarWasVisible to isSidebarVisible()
-			-- logger's debugf("sideBarWasVisible: {}", sideBarWasVisible)
+			logger's debugf("sideBarWasVisible: {}", sideBarWasVisible)
 			
 			if sideBarWasVisible is false then -- let's try to simplify by getting the name from the window name
 				set nameTokens to textUtil's split(windowTitle, unic's SEPARATOR)
 				if number of items in nameTokens is 2 then -- There's a small risk that a current website has the same separator characters in its title and thus result in the wrong group name.
 					logger's info("Returning group name from window title")
 					return first item of nameTokens
+					
 				end if
+				return DEFAULT_GROUP_NAME
+				
 			end if
+			
+			-- KILLED codes below.
 			
 			showSidebar()
 			
@@ -254,11 +268,29 @@ on decorate(safariInstance)
 			end tell
 			
 			set sideBarWasVisible to isSidebarVisible()
+			-- logger's debugf("sideBarWasVisible: {}", sideBarWasVisible)
+			
+			if sideBarWasVisible then
+				tell application "System Events" to tell process "Safari"
+					try
+						set selected of (first row of outline 1 of scroll area 1 of splitter group 1 of front window whose description of UI element 1 of UI element 1 starts with "Monitoring") to true
+					end try
+				end tell
+				return
+				
+			end if
+			
+			tell application "System Events" to tell process "Safari"
+				set groupMenuUI to menu button 1 of group 1 of toolbar 1 of front window
+				click groupMenuUI
+				click menu item groupName of menu 1 of groupMenuUI
+			end tell
+			return
+			
+			-- KILLED codes below
+			
 			logger's debug("Closing sidebar...")
 			closeSidebar()
-			
-			
-			
 			
 			script ToolBarWaiter
 				tell application "System Events" to tell process "Safari"

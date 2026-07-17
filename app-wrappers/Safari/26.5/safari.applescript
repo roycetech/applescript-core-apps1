@@ -219,9 +219,7 @@ on spotCheck()
 		set theNewWindow to sut's newWindowWithProfile(sutUrl, sutProfileName)
 		
 		logger's infof("Window name: {}", name of appWindow of theNewWindow)
-		sut's switchGroup("Monitoring")
-		
-		
+		-- sut's switchGroup("Monitoring")
 		
 		-- BELOW cases handling FOR REVIEW.
 		
@@ -546,11 +544,19 @@ on new()
 			
 			script StartPageWaiter
 				tell application "Safari"
-					if (the count of tabs of front window) is 1 then return id of front window
+					if (the count of tabs of front window) is 1 then
+						set windowId to id of front window
+						if windowId is not missing value then return windowId
+						
+					end if
 				end tell
 			end script
-			set windowId to exec of retry on result for 3
-			assertThat of std given condition:windowId is not missing value, messageOnFail:"Failed to initialize safari window to a valid state"
+			set windowId to exec of retry on result for 5
+			logger's debugf("windowId: {}", windowId)
+			
+			set assertionFailPrefix to profileName & ". "
+			if profileName is missing value then set assertionFailPrefix to ""
+			assertThat of std given condition:windowId is not missing value, messageOnFail:assertionFailPrefix & "Failed to initialize safari window to a valid state"
 			
 			tell application "Safari"
 				set newSafariTabInstance to safariTabLib's new(windowId, 1)
@@ -582,8 +588,12 @@ on new()
 				dock's triggerAppMenu("Safari", {"New Window", "New " & normalizedProfileName & " Window"})
 				
 			else
-				dock's triggerAppMenu("Safari", "New Window")
-				
+				-- dock's triggerAppMenu("Safari", "New Window")
+				tell application "Safari"
+					make new document
+					-- with properties {URL:"https://example.com"}
+					-- activate
+				end tell
 			end if
 			
 			script BlankDocumentWaiter
