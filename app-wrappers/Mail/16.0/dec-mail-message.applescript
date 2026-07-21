@@ -25,7 +25,16 @@ on spotCheck()
 	set listUtil to script "core/list"
 	set cases to listUtil's splitAndTrimParagraphs("
 		Main
+		Manual: Archive Message
 		Manual: Delete Message
+		Manual: Move to Junk
+		Dummy
+
+		Manual: Reply to Message
+		Manual: Reply to All
+		Manual: Forward Message
+		Dummy
+		Dummy
 	")
 	
 	set spotScript to script "core/spot-test"
@@ -45,10 +54,22 @@ on spotCheck()
 	if caseIndex is 1 then
 		
 	else if caseIndex is 2 then
-		sut's deleteMessage()
-
-	else if caseIndex is 3 then
+		sut's archiveMessage()
 		
+	else if caseIndex is 3 then
+		sut's deleteMessage()
+		
+	else if caseIndex is 4 then
+		sut's junkMessage()
+		
+	else if caseIndex is 5 then
+		sut's replyMessage()
+		
+	else if caseIndex is 6 then
+		sut's replyAllMessage()
+		
+	else if caseIndex is 7 then
+		sut's forwardMessage()
 	else
 		
 	end if
@@ -64,22 +85,97 @@ on decorate(mailInstance)
 	
 	script MailMessageDecorator
 		property parent : mailInstance
-
-		on deleteMessage()
+		
+		on replyMessage()
 			set messageWindow to getMessageWindow()
-			if messageWindow is missing value then 
+			if messageWindow is missing value then
+				logger's info("Message window was not found")
+				return
+			end if
+
+			tell application "System Events" to tell process "Mail"
+				set frontmost to true -- Required
+				try
+					click (first button of group 2 of toolbar 1 of front window whose description is "Reply")
+				end try
+			end tell			
+		end replyMessage
+
+		on replyAllMessage()
+			set messageWindow to getMessageWindow()
+			if messageWindow is missing value then
 				logger's info("Message window was not found")
 				return
 			end if
 			
 			tell application "System Events" to tell process "Mail"
-				set frontmost to true  -- Required
-				try 
-					click first button of group 1 of toolbar 1 of front window whose description is "Delete"
+				set frontmost to true -- Required
+				try
+					click (first button of group 2 of toolbar 1 of front window whose description is "Reply All")
+				end try
+			end tell
+		end replyAllMessage
+
+		on forwardMessage()
+			set messageWindow to getMessageWindow()
+			if messageWindow is missing value then
+				logger's info("Message window was not found")
+				return
+			end if
+
+			tell application "System Events" to tell process "Mail"
+				set frontmost to true -- Required
+				try
+					click (first button of group 2 of toolbar 1 of front window whose description is "Forward")
+				end try
+			end tell
+		end forwardMessage
+		
+		on junkMessage()
+			set messageWindow to getMessageWindow()
+			if messageWindow is missing value then
+				logger's info("Message window was not found")
+				return
+			end if
+			
+			tell application "System Events" to tell process "Mail"
+				set frontmost to true -- Required
+				try
+					click (first button of group 1 of toolbar 1 of front window whose description is "Junk")
+				end try
+			end tell
+		end junkMessage
+		
+		on archiveMessage()
+			set messageWindow to getMessageWindow()
+			if messageWindow is missing value then
+				logger's info("Message window was not found")
+				return
+			end if
+			
+			tell application "System Events" to tell process "Mail"
+				set frontmost to true -- Required
+				try
+					click (first button of group 1 of toolbar 1 of front window whose description is "Archive")
+				end try
+			end tell
+		end archiveMessage
+		
+		on deleteMessage()
+			set messageWindow to getMessageWindow()
+			if messageWindow is missing value then
+				logger's info("Message window was not found")
+				return
+			end if
+			
+			tell application "System Events" to tell process "Mail"
+				set frontmost to true -- Required
+				try
+					click (first button of group 1 of toolbar 1 of front window whose description is "Delete")
 				end try
 			end tell
 		end deleteMessage
 	end script
-
+	
 end decorate
 
