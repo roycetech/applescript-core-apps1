@@ -21,7 +21,7 @@ use unic : script "core/unicodes"
 
 use loggerFactory : script "core/logger-factory"
 
-use retryLib : script "core/retry"
+use retryLib : script "core/retry" 
 use kbLib : script "core/keyboard"
 
 property logger : missing value
@@ -273,7 +273,7 @@ on decorate(safariInstance)
 			if sideBarWasVisible then
 				tell application "System Events" to tell process "Safari"
 					try
-						set selected of (first row of outline 1 of scroll area 1 of splitter group 1 of front window whose description of UI element 1 of UI element 1 starts with "Monitoring") to true
+						set selected of (first row of outline 1 of scroll area 1 of splitter group 1 of front window whose description of UI element 1 of UI element 1 starts with groupName) to true
 					end try
 				end tell
 				return
