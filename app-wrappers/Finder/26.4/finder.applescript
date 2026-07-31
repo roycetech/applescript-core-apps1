@@ -78,6 +78,7 @@ on spotCheck()
 
 	set sut to new()
 	logger's infof("Is Busy: {}", sut's isBusy())
+	logger's infof("Show file extension: {}", sut's isShowFileExtension())
 	logger's infof("Integration: User Path: {}", sut's getUserPath())
 	logger's infof("Integration: View Type: {}", sut's getFileObjectViewType())
 
@@ -175,6 +176,17 @@ on new()
 			end tell
 		end isBusy
 
+
+		(*
+			Whether Finder is set to show all filename extensions
+			(Finder Settings > Advanced > "Show all filename extensions").
+		*)
+		on isShowFileExtension()
+			try
+				return (do shell script "defaults read com.apple.finder AppleShowAllExtensions") is "1"
+			end try
+			false
+		end isShowFileExtension
 
 
 		on putInTrash(posixPath)
