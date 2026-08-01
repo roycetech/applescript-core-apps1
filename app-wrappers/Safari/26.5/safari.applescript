@@ -31,6 +31,7 @@
 		end tell
 
 	@Change Logs:
+		Sat, Aug 01, 2026, at 03:48:34 PM - Fixed isAddressBarFocused()
 		Fri, Jul 10, 2026, at 08:09:24 AM - Added isProfilesActive handler.
 		Thu, Jul 09, 2026, at 08:25:20 AM - New window with profile fix when profiles aren't set yet.
 		Sat, May 30, 2026, at 05:28:46 PM - Added dec-safari-window-finder decorator
@@ -452,7 +453,9 @@ on new()
 					-- return value of attribute "AXSelectedText" of text field 1 of (first radio button of UI element 1 of last group of toolbar 1 of front window whose value of attribute "AXValue" is true) is not missing value
 					
 					-- Removed reference to the selected tab (radio button)
-					return value of attribute "AXSelectedText" of text field 1 of (last group of toolbar 1 of mainWindow) is not missing value
+					first radio button of UI element 1 of last group of toolbar 1 of front window whose value is true
+					return focused of text field 1 of result
+					
 				end tell
 			end if
 			
@@ -508,6 +511,11 @@ on new()
 		on isCompact()
 			set mainWindow to getFirstZoomableWindow()
 			if mainWindow is missing value then return false
+			
+			tell application "System Events" to tell process "Safari"
+				return not (exists (first UI element of mainWindow whose role description is "tab group"))
+				
+			end tell
 			
 			tell application "System Events" to tell process "Safari"
 				-- UI element 1 of group 2 of toolbar 1 of mainWindow
