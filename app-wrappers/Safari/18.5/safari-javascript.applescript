@@ -113,35 +113,61 @@ on decorate(safariTab)
 		property parent : safariTab
 
 		(*
+			Cross-browser JavaScript execution contract:
+			executeJavaScript          - side effects, errors swallowed
+			evaluateJavaScript         - returns result to AppleScript
+			executeJavaScriptUnchecked - raw pass through, no error handling
+			runScript* names are legacy aliases.
+
 			Created because _runScript is bugged but it is widely used and I
 			don't want to break the other uses. TODO: Unit Tests.
 		*)
+		(*
+			@Deprecation, use executeJavaScript().
+		*)
 		on runScript(scriptText)
+			executeJavaScript(scriptText)
+		end runScript
+
+		(*
+			@Deprecation, use evaluateJavaScript().
+		*)
+		on runScriptPlain(scriptText)
+			evaluateJavaScript(scriptText)
+		end runScriptPlain
+
+		(*
+			@Deprecation, use executeJavaScriptUnchecked().
+		*)
+		on runScriptDirect(scriptText)
+			executeJavaScriptUnchecked(scriptText)
+		end runScriptDirect
+
+		on executeJavaScript(javascriptSource)
 			try
 				tell application "Safari"
 					do JavaScript ("
 						try {
-							" & scriptText & "
+							" & javascriptSource & "
 						} catch(e) {
 							e.message;
 						}
 					") in _tab of safariTab
 				end tell
 			end try -- Ignore when _tab is de-referenced.
-		end runScript
+		end executeJavaScript
 
-		on runScriptPlain(scriptText)
-			if scriptText does not end with ";" then set scriptText to scriptText & ";"
+		on evaluateJavaScript(javascriptSource)
+			if javascriptSource does not end with ";" then set javascriptSource to javascriptSource & ";"
 			try
-				tell application "Safari" to return do JavaScript ("try {" & scriptText & "} catch(e) { e.message; }") in _tab of safariTab
+				tell application "Safari" to return do JavaScript ("try {" & javascriptSource & "} catch(e) { e.message; }") in _tab of safariTab
 			end try -- When _tab is de-referenced.
-		end runScriptPlain
+		end evaluateJavaScript
 
-
-		on runScriptDirect(scriptText)
+		on executeJavaScriptUnchecked(javascriptSource)
 			tell application "Safari"
-				do JavaScript scriptText in _tab of safariTab
+				do JavaScript javascriptSource in _tab of safariTab
 			end tell
-		end runScriptDirect
+		end executeJavaScriptUnchecked
 	end script
 end decorate

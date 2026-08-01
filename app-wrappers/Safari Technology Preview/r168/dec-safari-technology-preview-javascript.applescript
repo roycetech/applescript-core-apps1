@@ -68,9 +68,40 @@ on decorate(mainScript)
 	script ScriptSafariTechnologyPreviewJavaScript
 		property parent : mainScript
 		
+		(*
+			Cross-browser JavaScript execution contract:
+			executeJavaScript          - side effects, errors swallowed
+			evaluateJavaScript         - returns result to AppleScript
+			executeJavaScriptUnchecked - raw passthrough, no error handling
+			runScript* names are legacy aliases.
+		*)
+		(*
+			@Deprecation, use executeJavaScriptUnchecked().
+		*)
 		on runScriptPlain(scriptText)
-			set theTab to _getTab()
-			tell application "Safari Technology Preview" to do JavaScript scriptText in theTab
+			executeJavaScriptUnchecked(scriptText)
 		end runScriptPlain
+
+		on executeJavaScript(javascriptSource)
+			set theTab to _getTab()
+			tell application "Safari Technology Preview" to do JavaScript ("
+				try {
+					" & javascriptSource & "
+				} catch(e) {
+					e.message;
+				}
+			") in theTab
+		end executeJavaScript
+
+		on evaluateJavaScript(javascriptSource)
+			if javascriptSource does not end with ";" then set javascriptSource to javascriptSource & ";"
+			set theTab to _getTab()
+			tell application "Safari Technology Preview" to return do JavaScript ("try {" & javascriptSource & "} catch(e) { e.message; }") in theTab
+		end evaluateJavaScript
+
+		on executeJavaScriptUnchecked(javascriptSource)
+			set theTab to _getTab()
+			tell application "Safari Technology Preview" to do JavaScript javascriptSource in theTab
+		end executeJavaScriptUnchecked
 	end script
 end decorate
