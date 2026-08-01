@@ -58,11 +58,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(terminalInstance)
 	loggerFactory's inject(me)
 
 	script TerminalSettingsProfileDecorator
-		property parent : mainScript
+		property parent : terminalInstance
 
 		on switchProfilesTab(profilesTabTitle)
 			if running of application "Terminal" is false then return

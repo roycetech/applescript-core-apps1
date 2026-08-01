@@ -142,13 +142,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 	set retry to retryLib's new()
 	
 	script SystemSettingsKeyboardDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on revealKeyboard()
 			if running of application "System Settings" is false then

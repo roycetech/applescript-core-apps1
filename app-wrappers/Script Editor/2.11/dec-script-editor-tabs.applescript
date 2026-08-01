@@ -72,11 +72,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(scriptEditorInstance)
 	loggerFactory's inject(me)
 	
 	script ScriptEditorTabsDecorator
-		property parent : mainScript
+		property parent : scriptEditorInstance
 
 		on nextTab()
 			if running of application "Script Editor" is false then return

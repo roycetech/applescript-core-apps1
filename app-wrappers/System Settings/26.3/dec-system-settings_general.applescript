@@ -64,13 +64,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 
 	set decGeneralAbout to script "core/dec-system-settings_general_about" 
 	
 	script SystemSettingsGeneralDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on revealGeneral()
 			if running of application "System Settings" is false then

@@ -10,7 +10,7 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh 'app-wrappers/Safari/18.5/safari-javascript'
+		./scripts/build-lib.sh app-wrappers/Safari/18.5/safari-javascript
 
 	@Change Logs:
 		Fri, Jul 04, 2025 at 09:20:00 AM - Refactored out the javascript codes.
@@ -106,11 +106,11 @@ end spotCheck
 
 -- Start of actual handlers ================
 
-on decorate(safariTab)
+on decorate(safariTabInstance)
 	loggerFactory's injectBasic(me)
 
 	script SafariJavaScriptDecorator
-		property parent : safariTab
+		property parent : safariTabInstance
 
 		(*
 			Cross-browser JavaScript execution contract:

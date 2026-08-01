@@ -159,17 +159,7 @@ end spotCheck
 on new()
 	loggerFactory's inject(me)
 	
-	script FinderInstance
-		on isShowFileExtension()
-			try
-				(do shell script "defaults read NSGlobalDomain AppleShowAllExtensions") as integer
-				return 1 is equal to result
-			end try
-			
-			false
-		end isShowFileExtension
-		
-		
+	script FinderInstance		
 		on menuAddToSidebar()
 			if running of application "Finder" is false then return
 			
@@ -187,9 +177,20 @@ on new()
 				exists (first window whose role description is "dialog")
 			end tell
 		end isBusy
-		
-		
-		
+
+
+		(*
+			Whether Finder is set to show all filename extensions
+			(Finder Settings > Advanced > "Show all filename extensions").
+		*)
+		on isShowFileExtension()
+			try
+				return (do shell script "defaults read com.apple.finder AppleShowAllExtensions") is "1"
+			end try
+			false
+		end isShowFileExtension
+
+
 		on putInTrash(posixPath)
 			set computedPosixPath to untilde(posixPath)
 			-- logger's debugf("computedPosixPath: {}", computedPosixPath)

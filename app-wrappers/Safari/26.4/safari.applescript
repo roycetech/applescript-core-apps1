@@ -523,6 +523,7 @@ on new()
 		(*
 			TODO: Test for when Safari is not running.
 			This is dependent on the user setting for new window/tabs, currently it is tested against when new window is on a "Start Page"
+			TODO: Fails when profiles hasn't been actived in Safari.
 		*)
 		on newWindowWithProfile(targetUrl, profileName)
 			set normalProfileName to normalizeProfileName(profileName)

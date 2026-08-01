@@ -102,11 +102,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	
 	script SystemSettingsSoundsDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		(* @returns "Output" or "Input" *)
 		on getOutputAndInput()

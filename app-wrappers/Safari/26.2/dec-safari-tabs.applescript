@@ -96,13 +96,13 @@ end spotCheck
 
 
 (*
-	@mainScript - SafariInstance
+	@safariInstance - SafariInstance
  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	script SafariTabsDecorator
-		property parent : mainScript
+		property parent : safariInstance
 		property sortingTabs : missing value
 
 		on switchTabToIndex(tabIndex)

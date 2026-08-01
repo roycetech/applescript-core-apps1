@@ -71,13 +71,13 @@ end spotCheck
 
 
 (*  
-	@mainScript - SafariInstance
+	@safariInstance - SafariInstance
 *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	
 	script SafariWindowFinderDecorator
-		property parent : mainScript
+		property parent : safariInstance
 		
 		on findWindowByTabGroupName(tabGroupName)
 			if running of application "Safari" is false then return missing value

@@ -63,12 +63,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(automatorInstance)
 	loggerFactory's inject(me)
 	set usr to usrLib's new()
 	
 	script AutomatorAppleScriptDecorator
-		property parent : mainScript
+		property parent : automatorInstance
 		(* Allow override of the domain destination, e.g. Speech works only on user domain. *)
 		property domainKeyOverride : missing value
 		

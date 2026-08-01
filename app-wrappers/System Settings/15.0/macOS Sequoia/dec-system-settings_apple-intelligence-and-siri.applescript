@@ -74,12 +74,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 	
 	script SystemSettingsAppleIntelligenceAndSiriDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on getSiriKeyboardShortcut()
 			if running of application "System Settings" is false then return missing value

@@ -91,11 +91,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(scriptEditorInstance)
 	loggerFactory's inject(me)
 	
 	script ScriptEditorSettingsGeneralDecorator
-		property parent : mainScript
+		property parent : scriptEditorInstance
 		
 		on isShowScriptMenu()
 			_isSettingsCheckboxChecked("General", "Show Script menu in menu bar")

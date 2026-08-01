@@ -78,14 +78,14 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	set retry to retryLib's new()
 	set kb to kbLib's new()
 
 	script SafariTabGroupDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		on getGroupName()
 			if running of application "Safari" is false then return missing value

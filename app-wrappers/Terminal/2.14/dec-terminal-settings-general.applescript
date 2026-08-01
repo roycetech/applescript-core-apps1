@@ -138,12 +138,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(terminalInstance)
 	loggerFactory's inject(me)
 	set kb to kbLib's new()
 
 	script TerminalSettingsGeneralDecorator
-		property parent : mainScript
+		property parent : terminalInstance
 
 		on getOnStartupOpen()
 			set settingsWindow to getSettingsWindow()

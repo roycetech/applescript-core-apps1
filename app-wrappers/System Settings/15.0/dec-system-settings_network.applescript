@@ -85,12 +85,12 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 	
 	script SystemSettingsNetworkDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on revealNetwork()
 			tell application "System Settings" to activate

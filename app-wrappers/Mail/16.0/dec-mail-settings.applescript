@@ -100,7 +100,7 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(mailInstance)
 	loggerFactory's inject(me)
 
 	set SETTINGS_TITLES to listUtil's splitAndTrimParagraphs("
@@ -118,7 +118,7 @@ on decorate(mainScript)
 	")
 
 	script MailSettingsDecorator
-		property parent : mainScript
+		property parent : mailInstance
 
 		on isSettingsWindowPresent()
 			if running of application "Mail" is false then return false

@@ -76,11 +76,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(finderInstance)
 	loggerFactory's inject(me)
 	
 	script FinderSelectionDecorator
-		property parent : mainScript
+		property parent : finderInstance
 				
 		(* @returns the selected objects. Empty list if none is selected. *)
 		on getSelection()

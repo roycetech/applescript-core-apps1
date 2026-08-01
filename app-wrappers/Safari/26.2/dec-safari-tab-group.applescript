@@ -94,14 +94,14 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 	
 	set retry to retryLib's new()
 	set kb to kbLib's new()
 	
 	script SafariTabGroupDecorator
-		property parent : mainScript
+		property parent : safariInstance
 		
 		on moveCurrentTabToGroup(destinationGroupName)
 			set mainWindow to getFirstZoomableWindow()

@@ -57,11 +57,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(terminalInstance)
 	loggerFactory's inject(me)
 
 	script TerminalSettingsProfileKeyboardDecorator
-		property parent : mainScript
+		property parent : terminalInstance
 
 		(* Under Profiles > Keyboard Subtab *)
 		on isUseOptionAsMetaKeyOn()

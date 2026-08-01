@@ -100,14 +100,14 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 	set cliclick to cliclickLib's new()
 	set kb to kbLib's new()
 	
 	script SystemSettingsVoiceCommandsDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		(*
 			@returns true if the switch was turned on.

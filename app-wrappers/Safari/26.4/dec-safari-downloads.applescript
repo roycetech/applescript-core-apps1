@@ -63,13 +63,13 @@ end spotCheck
 
 
 (*
-	@mainScript - SafariInstance
+	@safariInstance - SafariInstance
 *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	script SafariDownloadsDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		on clearDownloads()
 			if not isDownloadsPopupPresent() then

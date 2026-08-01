@@ -77,7 +77,7 @@ on spotCheck()
 end spotCheck
 
 
-on decorate(termTabScript)
+on decorate(terminalTabInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 	set plutil to plutilLib's new()
@@ -88,7 +88,7 @@ on decorate(termTabScript)
 	end tell
 
 	script TerminalRunDecorator
-		property parent : termTabScript
+		property parent : terminalTabInstance
 		property SESSION_PLIST : localSessionPlist
 		property delayAfterRunShell : 0
 

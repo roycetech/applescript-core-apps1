@@ -116,14 +116,14 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set usr to usrLib's new()
 	set clip to clipLib's new()
 	set retry to retryLib's new()
 	
 	script SystemSettingsPasswordsDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on isPasswordsLocked()
 			script WindowWaiter

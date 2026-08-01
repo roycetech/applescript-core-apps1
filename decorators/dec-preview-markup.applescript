@@ -93,13 +93,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(previewInstance)
 	loggerFactory's inject(me)
 
 	set kb to kbLib's new()
 
 	script PreviewMarkupDecorator
-		property parent : mainScript
+		property parent : previewInstance
 
 		on showMarkupToolbar()
 			if running of application "Preview" is false then return

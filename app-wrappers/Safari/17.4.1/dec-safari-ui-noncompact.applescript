@@ -79,13 +79,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	set retry to retryLib's new()
 
 	script SafariUiNoncompactDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		(*
 			Determine loading state by clicking on the more options button in the address bar, and checking the resulting menu items for indication of the loading state.

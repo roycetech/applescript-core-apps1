@@ -61,11 +61,11 @@ end spotCheck
 (*  
 	@mainScript ScriptEditorInstance
 *)
-on decorate(mainScript)
+on decorate(scriptEditorInstance)
 	loggerFactory's inject(me)
 	
 	script ScriptEditorDialogDecorator
-		property parent : mainScript
+		property parent : scriptEditorInstance
 		
 		on respondReviewChanges()
 			tell application "System Events" to tell process "Script Editor"

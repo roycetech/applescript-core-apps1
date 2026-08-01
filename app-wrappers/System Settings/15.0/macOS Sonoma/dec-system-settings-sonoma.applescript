@@ -65,13 +65,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	set retry to retryLib's new()
 	set uiutil to uiutilLib's new()
 	
 	script SystemSettingsSonomaDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on revealPrivacyAndSecurity_Accessibility()
 			tell application "System Settings"

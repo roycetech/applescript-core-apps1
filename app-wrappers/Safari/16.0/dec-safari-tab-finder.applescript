@@ -76,13 +76,13 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	set kb to kbLib's new()
 
 	script SafariFinderDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		on getTabCount()
 			if running of application "Safari" is false then return 0

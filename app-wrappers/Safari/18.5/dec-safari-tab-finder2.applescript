@@ -479,11 +479,11 @@ end newTabByProfileFinder
 	find* handlers returns  missing value of tab if not found, otherwise it
 	returns a safariTabInstance .
 *)
-on decorate(mainScript)
+on decorate(safariInstance)
 	loggerFactory's inject(me)
 
 	script SafariTabFinderDecorator
-		property parent : mainScript
+		property parent : safariInstance
 
 		on getFirstWindowTabCount()
 			if running of application "Safari" is false then return 0

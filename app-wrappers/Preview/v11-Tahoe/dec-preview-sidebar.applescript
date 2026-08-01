@@ -76,11 +76,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(previewInstance)
 	loggerFactory's inject(me)
 	
 	script PreviewSidebarDecorator
-		property parent : mainScript
+		property parent : previewInstance
 		
 		on showThumbnails()
 			switchViewType("Thumbnails")

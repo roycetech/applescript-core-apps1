@@ -67,11 +67,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(systemSettingsInstance)
 	loggerFactory's inject(me)
 	
 	script SystemSettingsGeneralAboutDecorator
-		property parent : mainScript
+		property parent : systemSettingsInstance
 		
 		on showAboutPanel()
 			triggerSubPaneAbout()

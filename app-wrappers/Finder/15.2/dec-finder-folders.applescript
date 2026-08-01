@@ -79,11 +79,11 @@ end spotCheck
 
 
 (*  *)
-on decorate(mainScript)
+on decorate(finderInstance)
 	loggerFactory's inject(me)
 
 	script FinderFoldersDecorator
-		property parent : mainScript
+		property parent : finderInstance
 		property homeFolderCache : home folder
 
 		on getUserFolder()
