@@ -10,7 +10,7 @@ tell application "Calendar"
 	set allCalendars to every calendar
 	
 	repeat with aCalendar in allCalendars
-		set calendarEvents to (every event of aCalendar whose start date ³ startOfDay and start date ² endOfDay)
+		set calendarEvents to (every event of aCalendar whose start date is greater than or equal to startOfDay and start date is less than or equal to endOfDay)
 		
 		repeat with anEvent in calendarEvents
 			set eventTitle to summary of anEvent
