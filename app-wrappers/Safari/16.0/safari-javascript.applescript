@@ -477,7 +477,7 @@ on decorate(safariTabInstance)
 		end runScriptPlain
 
 		(*
-			@Deprecation, use executeJavaScriptUnchecked().
+			@Deprecated. Use executeJavaScriptUnchecked().
 		*)
 		on runScriptDirect(scriptText)
 			executeJavaScriptUnchecked(scriptText)
@@ -485,15 +485,14 @@ on decorate(safariTabInstance)
 
 		on executeJavaScript(javascriptSource)
 			try
-				tell application "Safari"
-					do JavaScript ("
-						try {
-							" & javascriptSource & "
-						} catch(e) {
-							e.message;
-						}
-					") in _tab of safariTab
-				end tell
+				set theTab to my _tab
+				tell application "Safari" to do JavaScript ("
+					try {
+						" & javascriptSource & "
+					} catch(e) {
+						e.message;
+					}
+				") in theTab
 			end try -- Ignore when _tab is de-referenced.
 		end executeJavaScript
 
@@ -510,17 +509,16 @@ on decorate(safariTabInstance)
 		end _runScript
 
 		on evaluateJavaScript(javascriptSource)
-			-- tell application "Safari" to do JavaScript scriptText in _tab of safariTab
 			if javascriptSource does not end with ";" then set javascriptSource to javascriptSource & ";"
 			try
-				tell application "Safari" to return do JavaScript ("try {" & javascriptSource & "} catch(e) { e.message; }") in _tab of safariTab
-			end try -- WHen _tab is de-referenced.
+				set theTab to my _tab
+				tell application "Safari" to return do JavaScript ("try {" & javascriptSource & "} catch(e) { e.message; }") in theTab
+			end try -- When _tab is de-referenced.
 		end evaluateJavaScript
 
 		on executeJavaScriptUnchecked(javascriptSource)
-			tell application "Safari"
-				do JavaScript javascriptSource in _tab of safariTab
-			end tell
+			set theTab to my _tab
+			tell application "Safari" to do JavaScript javascriptSource in theTab
 		end executeJavaScriptUnchecked
 
 		on submitFirstForm()
