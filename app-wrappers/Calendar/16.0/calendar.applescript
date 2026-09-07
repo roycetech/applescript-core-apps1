@@ -1,6 +1,6 @@
 (*
 	@Purpose:
-		Calendar wrapper backed by the Calendar app.
+		Calendar wrapper backed by EventKit.
 
 	@Testing:
 		Set IS_TEST to true and TEST_DATETIME using makeDateTime on the
@@ -16,6 +16,9 @@
 	@Last Modified: July 24, 2023 10:56 AM
 *)
 
+use AppleScript version "2.4"
+use framework "Foundation"
+use framework "EventKit"
 use scripting additions
 
 use loggerFactory : script "core/logger-factory"
@@ -74,86 +77,17 @@ on spotCheck()
 end spotCheck
 
 
-on makeDateTime(y, m, d, h, min, s)
-	set dt to (current date)
-	set year of dt to y
-	set month of dt to m
-	set day of dt to d
-	set hours of dt to h
-	set minutes of dt to min
-	set seconds of dt to s
-	dt
-end makeDateTime
-
-
-on dateFrom(dt)
-	makeDateTime(year of dt, (month of dt) as integer, day of dt, hours of dt, minutes of dt, seconds of dt)
-end dateFrom
-
-
-on fallsOnToday(recurStr, checkDate, origStart)
-	set dMonth to (month of checkDate) as integer
-	set dDay to day of checkDate
-	
-	set wkDay to weekday of checkDate
-	if wkDay is Sunday then set dIcalDay to "SU"
-	if wkDay is Monday then set dIcalDay to "MO"
-	if wkDay is Tuesday then set dIcalDay to "TU"
-	if wkDay is Wednesday then set dIcalDay to "WE"
-	if wkDay is Thursday then set dIcalDay to "TH"
-	if wkDay is Friday then set dIcalDay to "FR"
-	if wkDay is Saturday then set dIcalDay to "SA"
-	
-	set nthOccurrence to ((dDay - 1) div 7) + 1
-	set matchDayStr to (nthOccurrence as text) & dIcalDay
-	
-	set hasMonthRule to false
-	set hasDayRule to false
-	set isRightMonth to false
-	set isRightDay to false
-	
-	set AppleScript's text item delimiters to ";"
-	set ruleParts to text items of recurStr
-	set AppleScript's text item delimiters to ""
-	
-	if recurStr contains "FREQ=DAILY" then return true
-	
-	repeat with aPart in ruleParts
-		if aPart starts with "BYMONTH=" then
-			set hasMonthRule to true
-			set ruleMonth to (text 9 thru -1 of aPart) as integer
-			if ruleMonth is dMonth then set isRightMonth to true
-		else if aPart starts with "BYDAY=" then
-			set hasDayRule to true
-			set ruleDays to (text 7 thru -1 of aPart)
-			if ruleDays contains matchDayStr or ruleDays contains dIcalDay then set isRightDay to true
-		else if aPart starts with "BYMONTHDAY=" then
-			set hasDayRule to true
-			set ruleMonthDay to (text 12 thru -1 of aPart) as integer
-			if ruleMonthDay is dDay then set isRightDay to true
-		end if
-	end repeat
-	
-	if recurStr contains "FREQ=WEEKLY" then
-		if hasDayRule then
-			if isRightDay then return true
-		else
-			if (weekday of origStart) is wkDay then return true
-		end if
-	end if
-	
-	if recurStr contains "FREQ=YEARLY" then
-		if hasMonthRule and hasDayRule then
-			if isRightMonth and isRightDay then return true
-		else if not hasMonthRule and not hasDayRule then
-			if (month of origStart is month of checkDate) and (day of origStart is day of checkDate) then return true
-		else if hasMonthRule and not hasDayRule then
-			if isRightMonth and (day of origStart is dDay) then return true
-		end if
-	end if
-	
-	false
-end fallsOnToday
+on asDateToNSDate(asDate)
+	set sysCalendar to current application's NSCalendar's currentCalendar()
+	set dateComps to current application's NSDateComponents's alloc()'s init()
+	dateComps's setYear:(year of asDate)
+	dateComps's setMonth:((month of asDate) as integer)
+	dateComps's setDay:(day of asDate)
+	dateComps's setHour:(hours of asDate)
+	dateComps's setMinute:(minutes of asDate)
+	dateComps's setSecond:(seconds of asDate)
+	sysCalendar's dateFromComponents:dateComps
+end asDateToNSDate
 
 
 (*  *)
@@ -192,126 +126,30 @@ on new()
 			dateFrom(TEST_DATETIME)
 		end getCurrentDate
 		
-		on mapTimedEventDate(origDate, todayAnchor, dayStart, dayEnd)
-			if (origDate is greater than or equal to dayStart) and (origDate is less than or equal to dayEnd) then
-				dateFrom(origDate)
-			else
-				set mappedDate to dateFrom(todayAnchor)
-				set time of mappedDate to (time of origDate)
-				mappedDate
-			end if
-		end mapTimedEventDate
-		
 		(*
 			@returns list of CalendarEventInstance
 		*)
 		on getEventsToday()
-			set instanceRef to me
-			set todayDate to instanceRef's getCurrentDate()
-			set startOfDay to instanceRef's makeDateTime(year of todayDate, (month of todayDate) as integer, day of todayDate, 0, 0, 0)
-			set endOfDay to startOfDay + (1 * days) - 1
+			set nsToday to calendarLib's asDateToNSDate(my getCurrentDate())
 			
-			set rawEvents to {}
+			set sysCalendar to current application's NSCalendar's currentCalendar()
+			set startOfDay to sysCalendar's startOfDayForDate:nsToday
 			
-			tell application "Calendar"
-				repeat with aCalendar in every calendar
-					set calName to name of aCalendar
-					
-					if calName contains "Holiday" then
-						try
-							set allHolidayProps to properties of events of aCalendar
-							repeat with evtProps in allHolidayProps
-								set origStart to start date of evtProps
-								set recurRule to recurrence of evtProps
-								
-								set isHappeningToday to false
-								
-								if (origStart is greater than or equal to startOfDay) and (origStart is less than or equal to endOfDay) then
-									set isHappeningToday to true
-								end if
-								
-								if (origStart is less than startOfDay) and (recurRule is not missing value) then
-									if calendarLib's fallsOnToday(recurRule, todayDate, origStart) then
-										set isHappeningToday to true
-									end if
-								end if
-								
-								if isHappeningToday then
-									set evtTitle to summary of evtProps
-									set end of rawEvents to {calendarName:calName, eventRecord:{eventName:evtTitle, eventStart:startOfDay, eventEnd:endOfDay, eventLink:"No link", eventNotes:"", allDay:true}}
-								end if
-							end repeat
-						end try
-						
-					else
-						set normalEvents to {}
-						try
-							set normalEvents to (every event of aCalendar whose start date is greater than or equal to startOfDay and start date is less than or equal to endOfDay)
-						end try
-						
-						set spanningEvents to {}
-						try
-							set spanningEvents to (every event of aCalendar whose start date is less than startOfDay and end date is greater than startOfDay)
-						end try
-						
-						set activeRecurring to {}
-						try
-							set pastRecurring to (every event of aCalendar whose start date is less than startOfDay and recurrence is not missing value)
-							repeat with recurEvt in pastRecurring
-								if calendarLib's fallsOnToday((recurrence of recurEvt), todayDate, (start date of recurEvt)) then
-									set end of activeRecurring to recurEvt
-								end if
-							end repeat
-						end try
-						
-						set allEvents to normalEvents & spanningEvents & activeRecurring
-						
-						repeat with anEvent in allEvents
-							try
-								set evtTitle to summary of anEvent
-								set isAllDay to false
-								try
-									set isAllDay to allday event of anEvent
-								end try
-								
-								if isAllDay is true then
-									set evtStart to instanceRef's dateFrom(startOfDay)
-									set evtEnd to instanceRef's dateFrom(endOfDay)
-								else
-									set origStart to start date of anEvent
-									set origEnd to end date of anEvent
-									set evtStart to instanceRef's mapTimedEventDate(origStart, todayDate, startOfDay, endOfDay)
-									set evtEnd to instanceRef's mapTimedEventDate(origEnd, todayDate, startOfDay, endOfDay)
-									if evtEnd is less than evtStart then set evtEnd to evtEnd + (1 * days)
-								end if
-								
-								set evtURL to "No link"
-								try
-									if url of anEvent is not missing value then set evtURL to url of anEvent
-								end try
-								if evtURL is "No link" then
-									try
-										if location of anEvent contains "http" then set evtURL to location of anEvent
-									end try
-								end if
-								
-								set evtNotes to ""
-								try
-									if description of anEvent is not missing value then set evtNotes to description of anEvent
-								end try
-								
-								set end of rawEvents to {calendarName:calName, eventRecord:{eventName:evtTitle, eventStart:evtStart, eventEnd:evtEnd, eventLink:evtURL, eventNotes:evtNotes, allDay:isAllDay}}
-							end try
-						end repeat
-					end if
-					
-				end repeat
-			end tell
+			set timeComps to current application's NSDateComponents's alloc()'s init()
+			timeComps's setDay:1
+			timeComps's setSecond:-1
+			set endOfDay to sysCalendar's dateByAddingComponents:timeComps toDate:startOfDay options:0
+			
+			set eventStore to current application's EKEventStore's alloc()'s init()
+			set searchPredicate to eventStore's predicateForEventsWithStartDate:startOfDay endDate:endOfDay calendars:(missing value)
+			set theEvents to eventStore's eventsMatchingPredicate:searchPredicate
 			
 			set todayEvents to {}
-			repeat with rawEvent in rawEvents
-				set end of todayEvents to calendarEventLib's newFromCalendarRecord(eventRecord of rawEvent, calendarName of rawEvent)
-			end repeat
+			if theEvents is not missing value then
+				repeat with anEvent in theEvents
+					set end of todayEvents to calendarEventLib's newFromEkEvent(anEvent)
+				end repeat
+			end if
 			
 			todayEvents
 		end getEventsToday
