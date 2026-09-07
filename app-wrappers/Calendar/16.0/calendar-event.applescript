@@ -95,13 +95,13 @@ on newFromCalendarRecord(eventRecord, calendarName)
 		end isWholeDayEvent
 		
 		on isHoliday()
-			if not isWholeDayEvent() then return false
-			
 			if calendarName is not missing value then
 				ignoring case
 					if calendarName contains "holiday" then return true
 				end ignoring
 			end if
+			
+			if not isWholeDayEvent() then return false
 			
 			repeat with holidayName in holidayNames
 				if eventName is holidayName then return true
@@ -162,13 +162,13 @@ on newFromEkEvent(ekEvent)
 		end isWholeDayEvent
 		
 		on isHoliday()
-			if not isWholeDayEvent() then return false
-			
 			if calendarName is not missing value then
 				ignoring case
 					if calendarName contains "holiday" then return true
 				end ignoring
 			end if
+			
+			if not isWholeDayEvent() then return false
 			
 			repeat with holidayName in holidayNames
 				if eventName is holidayName then return true
