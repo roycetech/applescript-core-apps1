@@ -76,12 +76,9 @@ uninstall-automator:
 	@echo "TODO"
 
 
+VERSION_CALENDAR_MAJOR_MINOR = $(shell osascript -e "tell application \"Calendar\" to version" | awk -F. '{print $$1 "." $$2}')
 build-calendar: build-process
-	@echo "Building Calendar scripts..."
-	$(call _build-script, $(APP_WRAPPERS)/Calendar/11.0/dec-calendar-view)
-	$(call _build-script, $(APP_WRAPPERS)/Calendar/15.0/calendar-event)
-	$(call _build-script, $(APP_WRAPPERS)/Calendar/15.0/dec-calendar-meetings)
-	$(call _build-script, $(APP_WRAPPERS)/Calendar/15.0/calendar)
+	$(call _build-versioned-directory,Calendar,$(APP_WRAPPERS)/Calendar,"$(VERSION_CALENDAR_MAJOR_MINOR)")
 	@echo "Build Calendar completed\n"
 
 install-calendar: build-calendar
