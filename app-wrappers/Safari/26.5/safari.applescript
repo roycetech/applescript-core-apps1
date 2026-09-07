@@ -31,6 +31,7 @@
 		end tell
 
 	@Change Logs:
+		Sun, Aug 09, 2026, at 09:25:59 AM - Extracted window state handlers to dec-safari-window-state
 		Sat, Aug 01, 2026, at 03:48:34 PM - Fixed isAddressBarFocused()
 		Fri, Jul 10, 2026, at 08:09:24 AM - Added isProfilesActive handler.
 		Thu, Jul 09, 2026, at 08:25:20 AM - New window with profile fix when profiles aren't set yet.
@@ -38,7 +39,7 @@
 		Fri, Apr 03, 2026, at 05:58:00 PM - Fixed #isCompact.
 
 	@Created: Mon, Feb 10, 2025 at 7:30:44 AM
-	@Last Modified: 2026-04-03 17:58:15
+	@Last Modified: 2026-08-09 09:25:59
 *)
 use scripting additions
 
@@ -288,6 +289,7 @@ on new()
 	set decSafariTabFinder to script "core/dec-safari-tab-finder"
 	set decSafariTabFinder2 to script "core/dec-safari-tab-finder2"
 	set decSafariWindowFinder to script "core/dec-safari-window-finder"
+	set decSafariWindowState to script "core/dec-safari-window-state"
 	set decSafariUiNoncompact to script "core/dec-safari-ui-noncompact"
 	set decSafariSidebar to script "core/dec-safari-sidebar"
 	set decSafariKeychain to script "core/dec-safari-keychain"
@@ -328,23 +330,15 @@ on new()
 			result is equal to "true"
 		end isProfilesActive
 		
-		on isDownloadsPopupPresent()
-			if running of application "Safari" is false then return false
-			
-			tell application "System Events" to tell process "Safari"
-				exists (button "Clear downloads" of pop over 1 of toolbar 1 of front window)
-			end tell
-		end isDownloadsPopupPresent
-		
-		
 		on isPlaying()
-			set mainWindow to getFirstZoomableWindow()
-			if mainWindow is missing value then return false
-			
-			"WIP"
+			false -- WIP: overridden by dec-safari-ui-noncompact; compact-specific path TBD
 		end isPlaying
 		
 		
+		(*
+			Foundation for other handlers/decorators. Kept on the core so
+			earlier wrappers (e.g. ui-noncompact, downloads) can reach it via parent.
+		*)
 		on getFirstZoomableWindow()
 			if running of application "Safari" is false then return missing value
 			
@@ -356,15 +350,6 @@ on new()
 			end tell
 			missing value
 		end getFirstZoomableWindow
-		
-		on hideOtherWindows()
-			tell application "System Events" to tell process "Safari"
-				set nonMatchedWindows to windows whose title does not contain my getTitle()
-				repeat with nextUnmatched in nonMatchedWindows
-					click (first button of nextUnmatched whose description is "minimize button")
-				end repeat
-			end tell
-		end hideOtherWindows
 		
 		
 		on isFormSubmitAgainPresent()
@@ -410,61 +395,6 @@ on new()
 			end tell
 		end reload
 		
-		(*
-			TOFIX: False positive detected when a dialog was detected.  The
-			Developer settings window is not a dialog btw.
-		*)
-		on isMediaFullScreen()
-			if running of application "Safari" is false then return false
-			
-			tell application "System Events" to tell process "Safari"
-				exists (first window whose description is "dialog")
-			end tell
-		end isMediaFullScreen
-		
-		on isFullscreen()
-			if running of application "Safari" is false then return false
-			
-			tell application "System Events" to tell process "Safari"
-				value of attribute "AXFullScreen" of front window
-			end tell
-		end isFullscreen
-		
-		
-		on hasToolBar()
-			if running of application "Safari" is false then return false
-			
-			tell application "System Events" to tell process "Safari"
-				try
-					return exists toolbar 1 of front window
-				end try
-			end tell
-			
-			false
-		end hasToolBar
-		
-		(* WARNING: Slow operation, 3s. *)
-		on isAddressBarFocused()
-			set mainWindow to getFirstZoomableWindow()
-			if mainWindow is missing value then return false
-			
-			if isCompact() then -- Compact is no longer available on 26.2 must've been removed earlier.
-				tell application "System Events" to tell process "Safari"
-					-- return value of attribute "AXSelectedText" of text field 1 of (first radio button of UI element 1 of last group of toolbar 1 of front window whose value of attribute "AXValue" is true) is not missing value
-					
-					-- Removed reference to the selected tab (radio button)
-					first radio button of UI element 1 of last group of toolbar 1 of front window whose value is true
-					return focused of text field 1 of result
-					
-				end tell
-			end if
-			
-			tell application "System Events" to tell process "Safari"
-				value of attribute "AXSelectedText" of text field 1 of (my _getAddressBarGroup()) is not missing value
-			end tell
-		end isAddressBarFocused
-		
-		
 		on getFrontTab()
 			if not winUtil's hasWindow("Safari") then return missing value
 			
@@ -504,29 +434,6 @@ on new()
 				end tell
 			end tell
 		end getFirstTab
-		
-		(*
-			As of 26.4.
-		*)
-		on isCompact()
-			set mainWindow to getFirstZoomableWindow()
-			if mainWindow is missing value then return false
-			
-			tell application "System Events" to tell process "Safari"
-				return not (exists (first UI element of mainWindow whose role description is "tab group"))
-				
-			end tell
-			
-			tell application "System Events" to tell process "Safari"
-				-- UI element 1 of group 2 of toolbar 1 of mainWindow
-				UI element 1 of group 1 of toolbar 1 of mainWindow -- Can't believe this changed from group 2 in a single day.
-				try
-					return get value of attribute "AXIdentifier" of result is equal to "TabBar?isSeparate=false"
-				end try
-			end tell
-			
-			false
-		end isCompact
 		
 		(*
 			Test Cases:
@@ -660,7 +567,10 @@ on new()
 			safariTabLib's new(windowId, 1)
 		end newCognito
 		
-		
+		(*
+			Kept on the core because #newTab calls it; AppleScript parent
+			lookup cannot reach decorator wrappers from the base instance.
+		*)
 		on focusWindowWithToolbar()
 			if running of application "Safari" is false then return
 			
@@ -696,6 +606,7 @@ on new()
 	decSafariTabFinder2's decorate(result)
 	decSafariWindowFinder's decorate(result)
 	decSafariUiNoncompact's decorate(result)
+	decSafariWindowState's decorate(result)
 	decSafariSidebar's decorate(result)
 	decSafariKeychain's decorate(result)
 	decSafariPreferences's decorate(result)
