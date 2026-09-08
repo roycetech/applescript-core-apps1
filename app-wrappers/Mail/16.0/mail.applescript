@@ -162,7 +162,12 @@ on new()
 			if running of application "Mail" is false then return false
 
 			tell application "System Events" to tell process "Mail"
-				set windowTitle to the name of front window
+				try
+					set windowTitle to the name of front window
+				on error
+					return false
+					
+				end try
 			end tell
 
 			windowTitle does not contain unic's MAIL_SUBDASH
