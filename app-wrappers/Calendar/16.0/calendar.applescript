@@ -34,6 +34,7 @@ on spotCheck()
 		NOOP:
 		Get Events Today
 		Get Upcoming Events Today
+		Get Online Events Today
 	")
 	
 	set spotScript to script "core/spot-test"
@@ -47,24 +48,48 @@ on spotCheck()
 	
 	set sut to new()
 	
-	set IS_TEST of sut to true
+	-- set IS_TEST of sut to true  -- Comment out this line for current date.
 	set TEST_DATETIME of sut to sut's makeDateTime(2026, 9, 8, 9, 0, 0)
 	
 	logger's infof("Computed current date: {}", sut's getCurrentDate())
 	logger's infof("Is today a holiday?: {}", sut's isTodayHoliday())
+	logger's infof("Has events today?: {}", sut's hasEventsToday())
+	logger's infof("Has online events today?: {}", sut's hasOnlineEventsToday())
 	
 	if caseIndex is 2 then
 		set todayEvents to sut's getEventsToday()
 		logger's infof("Events today: {}", count of todayEvents)
 		repeat with nextCalendarEvent in todayEvents
-			logger's infof("  {} | {} - {} | allDay: {} | holiday: {}", {nextCalendarEvent's eventName, nextCalendarEvent's startDate, nextCalendarEvent's endDate, nextCalendarEvent's isWholeDayEvent(), nextCalendarEvent's isHoliday()})
+			logger's infof("  {} 
+| Start: {}
+| Ends: {} 
+| allDay: {} 
+| holiday: {}
+| Online?: {}
+| Location: {}", {nextCalendarEvent's eventName, nextCalendarEvent's startDate, nextCalendarEvent's endDate, nextCalendarEvent's isWholeDayEvent(), nextCalendarEvent's isHoliday(), nextCalendarEvent's isOnline(), nextCalendarEvent's getMeetingUrl()})
 		end repeat
 		
 	else if caseIndex is 3 then
 		set upcomingEvents to sut's getUpcomingEventsToday()
 		logger's infof("Upcoming events today: {}", count of upcomingEvents)
 		repeat with nextCalendarEvent in upcomingEvents
-			logger's infof("  {} | {} - {} | allDay: {} | holiday: {}", {nextCalendarEvent's eventName, nextCalendarEvent's startDate, nextCalendarEvent's endDate, nextCalendarEvent's isWholeDayEvent(), nextCalendarEvent's isHoliday()})
+			logger's infof("  {} 
+| Start: {}
+| Ends: {} 
+| allDay: {} 
+| holiday: {}
+| Online?: {}
+| Location: {}", {nextCalendarEvent's eventName, nextCalendarEvent's startDate, nextCalendarEvent's endDate, nextCalendarEvent's isWholeDayEvent(), nextCalendarEvent's isHoliday(), nextCalendarEvent's isOnline(), nextCalendarEvent's getMeetingUrl()})
+		end repeat
+		
+	else if caseIndex is 4 then
+		set onlineEvents to sut's getOnlineEvents()
+		logger's infof("Online events today: {}", count of onlineEvents)
+		repeat with nextCalendarEvent in onlineEvents
+			logger's infof("  {} 
+| Start: {}
+| Ends: {} 
+| Meeting URL: {}", {nextCalendarEvent's eventName, nextCalendarEvent's startDate, nextCalendarEvent's endDate, nextCalendarEvent's getMeetingUrl()})
 		end repeat
 		
 	end if
@@ -175,6 +200,7 @@ on new()
 			dateFrom(TEST_DATETIME)
 		end getCurrentDate
 		
+		
 		(*
 			@returns list of CalendarEventInstance
 		*)
@@ -264,6 +290,33 @@ on new()
 			
 			todayEvents
 		end getEventsToday
+		
+		(*
+			@returns list of CalendarEventInstance - today's online events.
+		*)
+		on getOnlineEvents()
+			set onlineEvents to {}
+			
+			repeat with nextCalendarEvent in my getEventsToday()
+				if nextCalendarEvent's isOnline() then set end of onlineEvents to nextCalendarEvent
+			end repeat
+			
+			onlineEvents
+		end getOnlineEvents
+		
+		(*
+			@returns boolean - true when today has one or more calendar events.
+		*)
+		on hasEventsToday()
+			(count of my getEventsToday()) > 0
+		end hasEventsToday
+		
+		(*
+			@returns boolean - true when today has one or more online events.
+		*)
+		on hasOnlineEventsToday()
+			(count of my getOnlineEvents()) > 0
+		end hasOnlineEventsToday
 		
 		(*
 			@returns list of CalendarEventInstance - today's timed events not yet started.

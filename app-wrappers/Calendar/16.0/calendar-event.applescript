@@ -74,6 +74,7 @@ end spotCheck
 *)
 on newFromCalendarRecord(eventRecord, calendarName)
 	loggerFactory's inject(me)
+	set libRef to me
 	set holidayNames to US_HOLIDAYS
 	
 	script CalendarEventInstance
@@ -110,6 +111,14 @@ on newFromCalendarRecord(eventRecord, calendarName)
 			
 			false
 		end isHoliday
+		
+		on isOnline()
+			libRef's _isOnlineEvent(my location, my description)
+		end isOnline
+		
+		on getMeetingUrl()
+			libRef's _meetingUrl(my location, my description)
+		end getMeetingUrl
 	end script
 	
 	set eventLink to eventLink of eventRecord
@@ -141,6 +150,7 @@ end newFromCalendarRecord
 *)
 on newFromEkEvent(ekEvent)
 	loggerFactory's inject(me)
+	set libRef to me
 	set holidayNames to US_HOLIDAYS
 	
 	script CalendarEventInstance
@@ -177,6 +187,14 @@ on newFromEkEvent(ekEvent)
 			
 			false
 		end isHoliday
+		
+		on isOnline()
+			libRef's _isOnlineEvent(my location, my description)
+		end isOnline
+		
+		on getMeetingUrl()
+			libRef's _meetingUrl(my location, my description)
+		end getMeetingUrl
 	end script
 	
 	set eventTitle to ekEvent's title()
@@ -253,3 +271,51 @@ on newFromEkEvent(ekEvent)
 	
 	CalendarEventInstance
 end newFromEkEvent
+
+
+(*
+	@returns boolean - true when urlText is a meeting link, not a map/geo URL.
+*)
+on _isMeetingUrl(urlText)
+	if urlText is missing value then return false
+	if urlText is "No link" then return false
+	
+	set isUrl to false
+	ignoring case
+		if urlText starts with "http://" or urlText starts with "https://" or urlText starts with "zoommtg://" then set isUrl to true
+	end ignoring
+	if not isUrl then return false
+	
+	ignoring case
+		if urlText contains "maps.apple.com" then return false
+		if urlText contains "maps.google.com" then return false
+		if urlText contains "google.com/maps" then return false
+		if urlText starts with "geo:" then return false
+		if urlText starts with "maps://" then return false
+	end ignoring
+	
+	true
+end _isMeetingUrl
+
+
+(*
+	@param candidateLocation - event location text.
+	@param candidateDescription - event URL / link text.
+	@returns text or missing value - first non-map meeting URL found.
+*)
+on _meetingUrl(candidateLocation, candidateDescription)
+	repeat with candidate in {candidateLocation, candidateDescription}
+		if my _isMeetingUrl(candidate) then return candidate
+	end repeat
+	missing value
+end _meetingUrl
+
+
+(*
+	@param candidateLocation - event location text.
+	@param candidateDescription - event URL / link text.
+	@returns boolean - true when either field holds a non-map meeting URL.
+*)
+on _isOnlineEvent(candidateLocation, candidateDescription)
+	my _meetingUrl(candidateLocation, candidateDescription) is not missing value
+end _isOnlineEvent
