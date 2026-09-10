@@ -1,6 +1,7 @@
 (*
 	@Purpose:
-		Calendar wrapper backed by the Calendar app.
+		Calendar wrapper. Today's events are read via EventKit (occurrence-accurate);
+		Calendar.app AppleScript is kept as getEventsTodayViaCalendarApp() fallback.
 
 	@Testing:
 		Set IS_TEST to true and TEST_DATETIME using makeDateTime on the
@@ -20,6 +21,7 @@ use scripting additions
 
 use loggerFactory : script "core/logger-factory"
 use calendarEventLib : script "core/calendar-event"
+use calendarEventKitLib : script "core/calendar-eventkit"
 
 property logger : missing value
 
@@ -35,6 +37,8 @@ on spotCheck()
 		Get Events Today
 		Get Upcoming Events Today
 		Get Online Events Today
+		Get Events Today (Calendar app)
+		
 		Dummy
 		
 		
@@ -43,7 +47,7 @@ on spotCheck()
 	set spotScript to script "core/spot-test"
 	set spotClass to spotScript's new()
 	set spot to spotClass's new(me, cases)
-	set {caseIndex, caseDesc} to spot's start()
+	set {caseIndex, caseDesc} to spot's start() 
 	if caseIndex is 0 then
 		logger's finish()
 		return
@@ -94,6 +98,19 @@ on spotCheck()
 | Start: {}
 | Ends: {} 
 | Meeting URL: {}", {nextCalendarEvent's eventName, nextCalendarEvent's startDate, nextCalendarEvent's endDate, nextCalendarEvent's getMeetingUrl()})
+		end repeat
+		
+	else if caseIndex is 5 then
+		set todayEvents to sut's getEventsTodayViaCalendarApp()
+		logger's infof("Events today (Calendar app): {}", count of todayEvents)
+		repeat with nextCalendarEvent in todayEvents
+			logger's infof("  {} 
+| Start: {}
+| Ends: {} 
+| allDay: {} 
+| holiday: {}
+| Online?: {}
+| Location: {}", {nextCalendarEvent's eventName, nextCalendarEvent's startDate, nextCalendarEvent's endDate, nextCalendarEvent's isWholeDayEvent(), nextCalendarEvent's isHoliday(), nextCalendarEvent's isOnline(), nextCalendarEvent's getMeetingUrl()})
 		end repeat
 		
 	end if
@@ -206,9 +223,32 @@ on new()
 		
 		
 		(*
+			@returns list of CalendarEventInstance (EventKit, occurrence-accurate).
+		*)
+		on getEventsTodayViaEventKit()
+			set todayAnchor to my getCurrentDate()
+			set startOfDay to my dateFrom(todayAnchor)
+			set time of startOfDay to 0
+			set endOfDay to startOfDay + (1 * days) - 1
+			calendarEventKitLib's eventsStartingBetween(startOfDay, endOfDay)
+		end getEventsTodayViaEventKit
+		
+		(*
 			@returns list of CalendarEventInstance
 		*)
 		on getEventsToday()
+			try
+				return my getEventsTodayViaEventKit()
+			on error errMsg
+				if logger is not missing value then logger's warnf("EventKit getEventsToday failed ({}); using Calendar app.", errMsg)
+				my getEventsTodayViaCalendarApp()
+			end try
+		end getEventsToday
+		
+		(*
+			@returns list of CalendarEventInstance via Calendar.app AppleScript (legacy).
+		*)
+		on getEventsTodayViaCalendarApp()
 			set instanceRef to me
 			set todayAnchor to instanceRef's getCurrentDate()
 			
@@ -293,7 +333,7 @@ on new()
 			end repeat
 			
 			todayEvents
-		end getEventsToday
+		end getEventsTodayViaCalendarApp
 		
 		(*
 			@returns list of CalendarEventInstance - today's online events.
