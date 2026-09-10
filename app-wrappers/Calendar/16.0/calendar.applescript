@@ -35,6 +35,9 @@ on spotCheck()
 		Get Events Today
 		Get Upcoming Events Today
 		Get Online Events Today
+		Dummy
+		
+		
 	")
 	
 	set spotScript to script "core/spot-test"
@@ -55,6 +58,7 @@ on spotCheck()
 	logger's infof("Is today a holiday?: {}", sut's isTodayHoliday())
 	logger's infof("Has events today?: {}", sut's hasEventsToday())
 	logger's infof("Has online events today?: {}", sut's hasOnlineEventsToday())
+	logger's infof("Has upcoming events today?: {}", sut's hasUpcomingEventsToday())
 	
 	if caseIndex is 2 then
 		set todayEvents to sut's getEventsToday()
@@ -310,6 +314,13 @@ on new()
 		on hasEventsToday()
 			(count of my getEventsToday()) > 0
 		end hasEventsToday
+		
+		(*
+			@returns boolean - true when today has one or more calendar events.
+		*)
+		on hasUpcomingEventsToday()
+			(count of my getUpcomingEventsToday()) > 0
+		end hasUpcomingEventsToday
 		
 		(*
 			@returns boolean - true when today has one or more online events.
