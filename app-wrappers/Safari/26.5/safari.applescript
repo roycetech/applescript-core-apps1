@@ -467,7 +467,7 @@ on new()
 				end tell
 			end script
 			set windowId to exec of retry on result for 5
-			logger's debugf("windowId: {}", windowId)
+			-- logger's debugf("windowId: {}", windowId)
 			
 			set assertionFailPrefix to profileName & ". "
 			if profileName is missing value then set assertionFailPrefix to ""
