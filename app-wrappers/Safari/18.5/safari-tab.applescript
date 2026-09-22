@@ -535,7 +535,7 @@ on new(windowId, pTabIndex)
 		end closeTab
 
 		on closeWindow()
-			tell application "Safari" to close my appWindow()
+			tell application "Safari" to close my appWindow
 		end closeWindow
 
 		on reload()
