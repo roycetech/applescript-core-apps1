@@ -196,5 +196,23 @@ on decorate(safariInstance)
 
 			if sidebarWasVisible then showSidebar()
 		end switchGroup
+
+
+		(*
+			Closes the Safari window for a tab group.
+			@tabGroupName - Exact prefix of the window title.
+		*)
+		on closeTabGroupWindowByName(tabGroupName)
+			set theTab to findWindowByTabGroupName(tabGroupName)
+			if theTab is missing value then
+				error "No Safari window whose title starts with: " & tabGroupName
+			end if
+			-- Window is raised; theTab is a safari-tab wrapper (front window, tab 1)
+			tell application "Safari"
+				tell theTab
+					close its appWindow
+				end tell
+			end tell
+		end closeTabGroupWindowByName
 	end script
 end decorate
