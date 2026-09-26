@@ -11,7 +11,7 @@ OS_VERSION_MAJOR := $(shell osascript -e "system version of (system info)" \
 | cut -d '.' -f 1)
 
 OS_VERSION_MAJOR_MINOR := $(shell osascript -e "system version of (system info)" \
-| cut -d '.' -f 1)
+| awk -F. '{print $$1 "." $$2}')
 
 
 IS_12  := $(shell [ $(OS_VERSION_MAJOR) -eq 12 ] && echo 1)
