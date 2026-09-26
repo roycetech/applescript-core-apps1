@@ -81,7 +81,7 @@ on spotCheck()
 	
 	logger's infof("Is new document window present?: {}", sut's isNewDocumentWindowPresent)
 	logger's infof("Integration: getScriptName: {}", frontTab's getScriptName())
-	-- logger's infof("(BROKEN, not possible when there's multiple projects) getResourcePath(): {}", frontTab's getResourcePath())
+	logger's infof("getResourcePath(): {}", frontTab's getResourcePath())
 	-- log frontTab's getContents()
 	log sut's getFrontContents()
 	

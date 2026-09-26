@@ -11,11 +11,14 @@
 	@Created: Sun, Oct 05, 2025 at 10:02:59 AM - Refactored out of script-editor.applescript.
 	@Last Modified: July 24, 2023 10:56 AM
 *)
+use scripting additions
+
 use textUtil : script "core/string"
 
 use loggerFactory : script "core/logger-factory"
 
 use retryLib : script "core/retry"
+use plutilLib : script "core/plutil"
 
 property logger : missing value
 
@@ -52,6 +55,8 @@ on spotCheck()
 	logger's infof("getScriptDirectory: {}", sut's getScriptDirectory())
 	logger's infof("getBaseScriptName: {}", sut's getBaseScriptName())
 	logger's infof("getPosixPath: {}", sut's getPosixPath())
+	logger's infof("getProjectPath: {}", sut's getProjectPath())
+	logger's infof("getResourcePath: {}", sut's getResourcePath())
 	if caseIndex is 1 then
 		
 	else if caseIndex is 2 then
@@ -91,6 +96,29 @@ on new(windowId)
 		on getScriptDirectory()
 			textUtil's stringBefore(getPosixPath(), getBaseScriptName())
 		end getScriptDirectory
+		
+		(* @returns the POSIX path of the project root containing this document, or missing value. *)
+		on getProjectPath()
+			set docPath to getPosixPath()
+			if docPath is missing value then return missing value
+			
+			try
+				return do shell script "cd \"$(dirname " & quoted form of docPath & ")\" && git rev-parse --show-toplevel"
+			end try
+			
+			set configUser to plutilLib's new("config-user")
+			set projectPaths to configUser's getList("AppleScript Projects Path")
+			if projectPaths is missing value then return missing value
+			
+			set bestMatch to missing value
+			repeat with nextPath in projectPaths
+				set nextPathText to nextPath as text
+				if docPath starts with (nextPathText & "/") then
+					if bestMatch is missing value or (length of nextPathText) > (length of bestMatch) then set bestMatch to nextPathText
+				end if
+			end repeat
+			bestMatch
+		end getProjectPath
 		
 		on focus()
 			if running of application "Script Editor" is false then return
@@ -194,18 +222,11 @@ on new(windowId)
 			text 1 thru endIdx of winName
 		end getBaseScriptName
 		
-		(* 
-			@Deprecated. 
-			Broken, because it assumed that the project will always be applescript-core :( 
-		*)
+		(* @returns the document path relative to its project root, or missing value. *)
 		on getResourcePath()
-			if running of application "Script Editor" is false then return missing value
-			
-			set projectSubPath to "applescript-core/"
-			tell application "Script Editor"
-				set resourcePath to path of document of appWindow
-			end tell
-			text ((offset of projectSubPath in resourcePath) + (length of projectSubPath)) thru -1 of resourcePath
+			set projectPath to getProjectPath()
+			if projectPath is missing value then return missing value
+			textUtil's replace(getPosixPath(), projectPath & "/", "")
 		end getResourcePath
 		
 		(*
