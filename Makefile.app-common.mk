@@ -3,11 +3,18 @@
 # @Description:
 # 	Contains the common app scripts for 1st and 3rd party apps.
 
+MACOS_BASE_PATH = ./macOS
+
 build-base-app:
 	@echo "Building Base App scripts..."
 	$(call _build-script,base-app)
-	$(call _build-script,abstract-app-with-file-dialog)
+	$(MAKE) build-abstract-app-with-file-dialog
 	@echo "Build Base App scripts completed\n"
+
+
+# Older macOS folders build first; newer compatible sources overwrite abstract-app-with-file-dialog.scpt.
+build-abstract-app-with-file-dialog:
+	$(call _build-versioned-directory,macOS,$(MACOS_BASE_PATH),"$(OS_VERSION_MAJOR_MINOR)")
 
 
 # @1 - App name

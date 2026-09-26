@@ -1,18 +1,19 @@
 (*
 	@Purpose:
 		This script serves as the base script for application wrapper scripts that utilizes a file dialog either to open or to save a file.
+		Implementation varies by macOS version; sources live under macOS/<version>/ and deploy as core/abstract-app-with-file-dialog.
 
 	@Project:
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh abstract-app-with-file-dialog
+		make build-base-app
+		./scripts/build-lib.sh 'macOS/26.6/abstract-app-with-file-dialog'
 
-	@Last Modified: 2026-03-24 17:31:28
+	@Last Modified: Thu, Sep 17, 2026, at 11:31:49 AM
 
 	@Change Logs:
-		Thu, Apr 23, 2026, at 04:40:34 PM - Added handlers for Save Replace/Cancel
-		Sat, Feb 28, 2026 at 07:20:19 PM - Created
+		Thu, Sep 17, 2026, at 11:31:40 AM - Created
 *)
 use scripting additions
 
@@ -140,7 +141,7 @@ on new(pProcessName)
 		
 		on hasFileDialogWindow()
 			tell application "System Events" to tell process (my processName)
-				exists (sheet 1 of windows)
+				exists (splitter group 1 of windows)
 			end tell
 		end hasFileDialogWindow
 
