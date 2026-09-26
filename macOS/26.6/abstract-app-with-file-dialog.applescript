@@ -7,8 +7,7 @@
 		applescript-core-apps1
 
 	@Build:
-		make build-base-app
-		./scripts/build-lib.sh 'macOS/26.6/abstract-app-with-file-dialog'
+		./scripts/build-lib.sh macOS/26.6/abstract-app-with-file-dialog
 
 	@Last Modified: Thu, Sep 17, 2026, at 11:31:49 AM
 
@@ -144,14 +143,14 @@ on new(pProcessName)
 				exists (splitter group 1 of windows)
 			end tell
 		end hasFileDialogWindow
-
+		
 		on hasOverwriteFileDialogWindow()
 			tell application "System Events" to tell process (my processName)
 				exists (button "Replace" of sheet 1 of sheet 1 of windows)
 			end tell
 		end hasOverwriteFileDialogWindow
-
-
+		
+		
 		on fileDialogReplaceConfirm()
 			tell application "System Events" to tell process (my processName)
 				try
@@ -159,8 +158,8 @@ on new(pProcessName)
 				end try
 			end tell
 		end fileDialogReplaceConfirm
-
-
+		
+		
 		on fileDialogReplaceCancel()
 			tell application "System Events" to tell process (my processName)
 				try
@@ -168,7 +167,7 @@ on new(pProcessName)
 				end try
 			end tell
 		end fileDialogReplaceCancel
-
+		
 		
 		on fileDialogSheetUI()
 			tell application "System Events" to tell process (my processName)
@@ -250,15 +249,15 @@ on new(pProcessName)
 			-- 	delay 1
 			-- 	if not exists(button actionLabel of splitter group 1 of my fileDialogSheetUI()) or my hasOverwriteFileDialogWindow() then return true
 			-- end tell
-
+			
 			script WaitDismiss
 				tell application "System Events" to tell process processName
 					click button actionLabel of splitter group 1 of my fileDialogSheetUI()
 					delay 1
-					if not exists(button actionLabel of splitter group 1 of my fileDialogSheetUI()) or my hasOverwriteFileDialogWindow() then return true
+					if not (exists (button actionLabel of splitter group 1 of my fileDialogSheetUI()) or my hasOverwriteFileDialogWindow()) then return true
 				end tell
 			end script
-			retry's exec on result for 3
+			exec of retry on result for 3
 		end fileDialogChooseSelectionWithAction
 		
 		
