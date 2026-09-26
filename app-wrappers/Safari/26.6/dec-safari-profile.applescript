@@ -6,11 +6,13 @@
 		applescript-core-apps1
 
 	@Build:
-		./scripts/build-lib.sh app-wrappers/Safari/26.0/dec-safari-profile
+		./scripts/build-lib.sh app-wrappers/Safari/26.6/dec-safari-profile
 
 	@Created: Mon, Oct 27, 2025, at 07:21:42 AM
 	@Last Modified: 2026-03-24 17:45:55
+	
 	@Change Logs:
+		Fri, Sep 25, 2026 - Added isProfilesActive.
 *)
 use textUtil : script "core/string"
 
@@ -47,6 +49,7 @@ on spotCheck()
 	set sut to sutLib's new()
 	set sut to decorate(sut)
 	
+	logger's infof("Profiles active: {}", sut's isProfilesActive())
 	logger's infof("Has profile Unicorn: {}", sut's hasWindowWithProfile("Unicorn"))
 	logger's infof("Has profile Personal: {}", sut's hasWindowWithProfile("Personal"))
 	logger's infof("Has profile Business: {}", sut's hasWindowWithProfile("Business"))
@@ -114,6 +117,24 @@ on decorate(safariInstance)
 		property parent : safariInstance
 		
 		
+		(*
+			@returns true if Safari profiles are set up, based on the front window's toolbar button.
+			Falls back to the Profiles folder check when Safari is not running or has no window.
+		*)
+		on isProfilesActive()
+			if running of application "Safari" is false then return continue isProfilesActive()
+			
+			tell application "System Events" to tell process "Safari"
+				if (count of windows) is 0 then return continue isProfilesActive()
+				try
+					return exists (first menu button of toolbar 1 of front window whose value of attribute "AXIdentifier" contains "profile=")
+				end try
+			end tell
+			
+			false
+		end isProfilesActive
+		
+		
 		(* Checks available profiles via the Safari icon in the Dock. *)
 		on hasWindowWithProfile(profileName)
 			if running of application "Safari" is false then
@@ -175,9 +196,12 @@ on decorate(safariInstance)
 				2. Running without a window
 				3. Running with a window using the same profile.
 				4. Running with a window using a different profile.
+				5. Profiles active/inactive - /ok.
 				
 		*)
 		on newTabOnProfile(profileName, targetUrl)
+			if not isProfilesActive() then return missing value
+			
 			if running of application "Safari" is false then
 				activate application "Safari"
 			end if
