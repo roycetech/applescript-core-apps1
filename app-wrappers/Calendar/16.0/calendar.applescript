@@ -22,6 +22,7 @@ use scripting additions
 use loggerFactory : script "core/logger-factory"
 use calendarEventLib : script "core/calendar-event"
 use calendarEventKitLib : script "core/calendar-eventkit"
+use decoratorCalendarWindow : script "core/dec-calendar-window"
 
 property logger : missing value
 
@@ -396,5 +397,5 @@ on new()
 		end isTodayHoliday
 	end script
 	
-	CalendarInstance
+	decoratorCalendarWindow's decorate(CalendarInstance)
 end new
