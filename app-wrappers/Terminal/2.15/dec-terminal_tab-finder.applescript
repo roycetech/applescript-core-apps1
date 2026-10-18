@@ -15,6 +15,7 @@
 
 use winUtilLib : script "core/window"
 use fileUtil : script "core/file"
+use textUtil : script "core/string"
 
 use loggerFactory : script "core/logger-factory"
 
@@ -390,18 +391,50 @@ on decorate(terminalInstance)
 		end findTabByDirectoryNamePrefix
 		
 		
+		
+		(*
+			Seems AI generated.
+		*)
 		on _findTabByDirectoryMatch(matchMode, searchValue)
+			-- logger's debugf("#_findTabByDirectoryMatch(matchMode={}, searchValue={})", {matchMode, searchValue})
 			if winUtil's hasWindow("Terminal") is false then return missing value
 			
 			set normalizedPathSearch to missing value
 			if matchMode is "path" then set normalizedPathSearch to TopLevel's normalizeDirectoryPath(searchValue)
 			
 			tell application "Terminal"
-				repeat with nextWindow in windows
-					set windowId to id of nextWindow
-					repeat with tabIndex from 1 to (count of tabs of nextWindow)
+				set windowsToIterate to windows
+			end tell
+			
+			repeat with nextWindow in windowsToIterate
+				set windowId to missing value
+				set nextWindowTabs to missing value
+				
+				try
+					tell application "Terminal"
+						set tabContents to textUtil's trim(contents of tab 1 of nextWindow)
+						set tabsLastLine to paragraph -1 of tabContents as text
+						-- logger's debugf("tabsLastLine: {}", tabsLastLine)
+						
+						if matchMode is "namePrefix" then
+							if tabsLastLine contains searchValue then
+								set windowId to id of nextWindow
+								return terminalTabLib's new(windowId)
+							end if
+						end if
+					end tell
+				end try
+				-- logger's debugf("windowId: {}", windowId)
+				
+				
+				if false and windowId is not missing value and nextWindowTabs is not missing value then
+					repeat with tabIndex from 1 to (count of nextWindowTabs)
+						logger's debugf("tabIndex: {}", tabIndex)
+						
 						try
-							set selected tab of nextWindow to tab tabIndex of nextWindow
+							tell application "Terminal"
+								set selected tab of nextWindow to tab tabIndex of nextWindow
+							end tell
 							set candidateTab to terminalTabLib's new(windowId)
 							if candidateTab is missing value then error "skip"
 							
@@ -411,12 +444,14 @@ on decorate(terminalInstance)
 								
 							else if matchMode is "namePrefix" then
 								set dirName to candidateTab's getDirectoryName()
+								logger's debugf("dirName: {}", dirName)
+								
 								if dirName is not missing value and dirName starts with searchValue then return candidateTab
 							end if
 						end try
 					end repeat
-				end repeat
-			end tell
+				end if
+			end repeat
 			
 			missing value
 		end _findTabByDirectoryMatch
