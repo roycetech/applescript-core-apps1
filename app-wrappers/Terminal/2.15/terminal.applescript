@@ -281,8 +281,13 @@ on new()
 		on scrollToBottom()
 			setScrollPosition(1)
 		end scrollToBottom
+
+
+		on scrollToTop()
+			setScrollPosition(0)
+		end scrollToTop
 		
-		
+
 		(*
 			@returns windowId
 		*)
