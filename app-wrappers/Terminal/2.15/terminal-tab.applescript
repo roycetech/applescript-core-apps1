@@ -17,6 +17,7 @@
 	@Last Modified: 2026-03-24 17:45:57
 	
 	@Change Logs:
+		Sun, Nov 15, 2026 - Added isClaude()
 		Sat, Oct 10, 2026, at 10:49:59 AM - Added getSelectedTabName()
 *)
 use script "core/Text Utilities"
@@ -55,8 +56,8 @@ on spotCheck()
 	
 	set listUtil to script "core/list"
 	set cases to listUtil's splitAndTrimParagraphs("
-		NOOP
-		Manual: New Window
+		NOOP 
+		Manual: New Window  
 		Manual: New Tab
 		Manual: Set Window Title
 		Manual: Set Tab Title
@@ -99,6 +100,7 @@ on spotCheck()
 	logger's infof("Is Bash: {}", sut's isBash())
 	logger's infof("Is Zsh: {}", sut's isZsh())
 	logger's infof("Is SSH: {}", sut's isSSH())
+	logger's infof("Is Claude: {}", sut's isClaude())
 	logger's infof("Prompt Text: {}", sut's getPromptText())
 	
 	logger's infof("Prompt: {}", sut's getPrompt())
@@ -362,6 +364,18 @@ on new(pWindowId)
 			termProcesses contains "-zsh" and {"com.docker.cli", "bash", "ssh"} does not contain the lastItem or lastItem contains "zsh"
 			-- lastItem contains "zsh" -- fails when using awsume cli on MFA wait state
 		end isZsh
+		
+		
+		(* @returns true if the latest process of the tab is "claude". *)
+		on isClaude()
+			if not hasProcess() then return false
+			
+			tell application "Terminal"
+				set termProcesses to processes of selected tab of my appWindow
+			end tell
+			
+			(last item of termProcesses) is "claude"
+		end isClaude
 		
 		
 		on hasLingeringCommand()
