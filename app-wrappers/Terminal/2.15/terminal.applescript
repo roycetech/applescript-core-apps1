@@ -33,6 +33,7 @@
 		./scripts/build-lib.sh app-wrappers/Terminal/2.15/terminal
 
 	@Change Logs
+		Sun, Nov 15, 2026, at 09:17:00 PM - Added #newTab
 		Thu, Jul 30, 2026, at 08:21:00 AM - Added #getScrollPosition, #setScrollPosition
 		Thu, Jul 30, 2026, at 08:13:35 AM - Added #scrollToBottom
 *)
@@ -84,6 +85,7 @@ on spotCheck()
 		Wait for Prompt
 		Manual: New Window (Not running, no window, has window)
 		Manual: Set Tab Name
+		Manual: App New Tab (Not running, no window, has window)
 	")
 	
 	set spotScript to script "core/spot-test"
@@ -158,6 +160,9 @@ on spotCheck()
 		set spotTabName to "AS " & emoji's WORK
 		set spotTab to sut's newWindow("ls", "Main")
 		
+	else if caseIndex is 10 then
+		set appTab to sut's newTab("spot-app-tab")
+		logger's infof("App new tab name: {}", appTab's getTabName())
 		
 	end if
 	
@@ -251,6 +256,18 @@ on new()
 			
 			theTab
 		end newWindow
+		
+		(*
+			Creates a new tab in the front window. Falls back to #newWindow when
+			Terminal is not running or has no window.
+			@returns TerminalTabInstance
+		*)
+		on newTab(tabName)
+			set frontTab to getFrontTab()
+			if frontTab is missing value then return newWindow(missing value, tabName)
+			
+			frontTab's newTab(tabName)
+		end newTab
 		
 		(*
 			@returns scroll position 0 (top) to 1 (bottom), or missing value if unavailable.
