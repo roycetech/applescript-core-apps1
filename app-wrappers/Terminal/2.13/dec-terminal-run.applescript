@@ -87,7 +87,7 @@ on decorate(terminalTabInstance)
 	set terminal to terminalLib's new()
 	set session to plutil's new("session")
 
-	script TerminalTabInstance
+	script TerminalRunDecorator
 		property parent : terminalTabInstance
 
 		(*

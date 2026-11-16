@@ -80,7 +80,7 @@ on decorate(terminalTabInstance)
 	set retry to retryLib's new()
 	set kb to kbLib's new()
 
-	script TerminalTabInstance
+	script TerminalOutputDecorator
 		property parent : terminalTabInstance
 
 		(* Used to determine the amount of characters to include in the getRecentOutput handler. *)

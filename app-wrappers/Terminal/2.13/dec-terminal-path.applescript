@@ -64,7 +64,7 @@ on decorate(terminalTabInstance)
 	loggerFactory's inject(me)
 	set terminal to terminalLib's new()
 
-	script TerminalTabInstance
+	script TerminalPathDecorator
 		property parent : terminalTabInstance
 		property _posixPath : missing value
 

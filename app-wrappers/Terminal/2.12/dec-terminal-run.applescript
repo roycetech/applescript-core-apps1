@@ -70,7 +70,7 @@ on decorate(terminalTabInstance)
 	set session to plutil's new("session")
 	set retry to retryLib's new()
 
-	script TerminalTabInstance
+	script TerminalRunDecorator
 		property parent : terminalTabInstance
 
 		(* This conflicted when declared on the outer script, so let's move it here instead. *)

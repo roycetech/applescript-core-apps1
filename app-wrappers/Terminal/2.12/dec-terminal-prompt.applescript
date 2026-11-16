@@ -88,7 +88,7 @@ on decorate(terminalTabInstance)
 	loggerFactory's injectBasic(me)
 	set retry to retryLib's new()
 
-	script TerminalTabInstance
+	script TerminalPromptDecorator
 		property parent : terminalTabInstance
 
 		(*

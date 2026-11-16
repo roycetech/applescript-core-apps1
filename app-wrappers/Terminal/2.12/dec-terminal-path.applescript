@@ -76,7 +76,7 @@ end spotCheck
 on decorate(terminalTabInstance)
 	loggerFactory's inject(me)
 
-	script TerminalTabInstance
+	script TerminalPathDecorator
 		property parent : terminalTabInstance
 		property _posixPath : missing value
 

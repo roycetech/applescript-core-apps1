@@ -96,7 +96,7 @@ on decorate(terminalTabInstance)
 	set retry to retryLib's new()
 	set terminal to terminalLib's new()
 
-	script TerminalTabInstance
+	script TerminalPromptDecorator
 		property parent : terminalTabInstance
 
 		(*

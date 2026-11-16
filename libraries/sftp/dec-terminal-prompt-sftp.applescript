@@ -61,7 +61,7 @@ end spotCheck
 
 (*  *)
 on decorate(terminalTabInstance)
-	script TerminalTabInstance -- shadow the original
+	script TerminalPromptSftpDecorator -- shadow the original
 		property parent : terminalTabInstance
 
 		on getPrompt()
