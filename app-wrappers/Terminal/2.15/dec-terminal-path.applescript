@@ -164,7 +164,7 @@ on decorate(terminalTabInstance)
 			end if
 			
 			set posixPath to getPosixPath()
-			logger's debugf("posixPath: {}", posixPath)
+			-- logger's debugf("posixPath: {}", posixPath)
 			
 			if posixPath is missing value then return missing value
 			
